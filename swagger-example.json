@@ -1,90 +1,133 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "description": "This is an example BFF service for the Contact Picker Smart Widget",
-      "version": "1.0.0",
-      "title": "Contact Picker BFF",
-      "contact": {
-        "email": "joeri.sebrechts@digipolis.be"
-      },
-      "license": {
-        "name": "MIT"
-      }
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an example BFF service for the Location Picker Smart Widget",
+    "version": "1.0.0",
+    "title": "Location Picker BFF",
+    "contact": {
+      "email": "joeri.sebrechts@digipolis.be"
     },
-    "host": "localhost:3000",
-    "basePath": "/api",
-    "schemes": [
-      "http"
-    ],
-    "paths": {
-      "/medewerkers": {
-        "get": {
-          "summary": "Return the matching contacts from mprofiel-admin",
-          "description": "Search is performed by first or last name, combining the results.",
-          "operationId": "listMedewerkers",
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "name": "search",
-              "in": "query",
-              "description": "The search string to match contacts by",
-              "required": true,
-              "type": "string"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "successful operation",
-              "schema": {
-                "$ref": "#/definitions/Contacts"
-              }
-            }
-          }
-        }
-      }
-    },
-    "definitions": {
-      "Contact": {
-        "required": [
-          "id",
-          "name"
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "host": "localhost:9999",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/locations": {
+      "get": {
+        "summary": "Return the matching locations",
+        "description": "It searches using a 'contains' filter, but addresses with street numbers need to match exactly.",
+        "operationId": "listLocations",
+        "produces": [
+          "application/json"
         ],
-        "properties": {
-          "id": {
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "The search string to match locations by",
+            "required": true,
             "type": "string"
           },
-          "name": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string",
-            "description": "The login id of this user"
-          },
-          "email": {
-            "type": "string"
-          },
-          "domain": {
-            "type": "string",
-            "description": "The AD domain that the user belongs to"
-          },
-          "avatarUrl": {
+          {
+            "name": "types",
+            "in": "query",
+            "description": "The types of locations to search for, comma-separated. Possible values are 'street' (street names), 'number' (address) and 'poi' (point of interest)",
+            "default": "street,number,poi",
+            "required": false,
             "type": "string"
           }
-        }
-      },
-      "Contacts": {
-        "type": "array",
-        "items": {
-          "$ref": "#/definitions/Contact"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Locations"
+            }
+          }
         }
       }
     }
+  },
+  "definitions": {
+    "Location": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "locationType"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "street": {
+          "type": "string",
+          "description": "the street name for this location"
+        },
+        "number": {
+          "type": "string",
+          "description": "the street address number for this location (may contain letters)"
+        },
+        "locationType": {
+          "type": "string",
+          "description": "The type of location, 'street', 'number' or 'poi'"
+        },
+        "layer": {
+          "type": "string",
+          "description": "The source layer this location was found on"
+        },
+        "coordinates": {
+          "$ref": "#/definitions/LocationCoordinates"
+        }
+      }
+    },
+    "LocationCoordinates": {
+      "type": "object",
+      "description": "The coordinates of this location",
+      "properties": {
+        "latLng": {
+          "$ref": "#/definitions/LatLngCoordinate"
+        },
+        "lambert": {
+          "$ref": "#/definitions/LambertCoordinate"
+        }
+      }
+    },
+    "LatLngCoordinate": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        }
+      }
+    },
+    "LambertCoordinate": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      }
+    },
+    "Locations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Location"
+      }
+    }
   }
+}

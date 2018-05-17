@@ -12,32 +12,12 @@ app.use(function(req, res, next) {
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.get('/api/antwerpenaars', (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    let fs = require("fs");
-    let index = 0;
-    let people = JSON.parse(
-        fs.readFileSync("./example/assets/antwerpenaars.json").toString()
-    ).map((str: string) => {
-        return { id: index++, name: str };
-    });
-    let result = people.filter((item: any) => {
-        if (typeof req.query.search === "string") {
-            return item.name.toLowerCase().indexOf(req.query.search.toLowerCase()) >= 0;
-        } else {
-            return false;
-        }
-    });
-    res.send(JSON.stringify(result));
-});
-
-app.get('/api/medewerkers', lib.mprofielAdmin.createController({
-    clientId: process.env.OAUTH_CLIENT_ID,
-    clientSecret: process.env.OAUTH_CLIENT_SECRET,
-    oauthUrl: process.env.MPROFIEL_ADMIN_OAUTH_URL,
-    serviceUrl: process.env.MPROFIEL_ADMIN_API_URL
+app.get('/api/locations', lib.antwerpen.createController({
+    solrAuthorization: process.env.SOLR_GIS_AUTHORIZATION,
+    solrGisUrl: process.env.SOLR_GIS_URL,
+    crabUrl: process.env.CRAB_URL
 }));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 9999;
 app.listen(port, () => 
     console.log('Example app listening on port ' + port + '!'))

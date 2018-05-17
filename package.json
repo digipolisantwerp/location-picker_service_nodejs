@@ -1,11 +1,12 @@
 {
-  "name": "@acpaas-ui-widgets/nodejs-contact-picker",
+  "name": "@acpaas-ui-widgets/nodejs-location-picker",
   "version": "1.0.1",
-  "description": "Contact Picker Smart Widget BFF package (Node)",
+  "description": "Location Picker Smart Widget BFF package (Node)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "nodemon",
+    "debug": "nodemon --inspect",
     "clean": "rimraf dist coverage",
     "build": "npm run clean && npm run build:ts",
     "build:ts": "tsc",
@@ -15,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/digipolisantwerp/contact-picker_service_nodejs.git"
+    "url": "https://github.com/digipolisantwerp/location-picker_service_nodejs.git"
   },
   "author": {
     "name": "Joeri Sebrechts",
@@ -25,18 +26,15 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
-    "oauth": "^0.9.15",
-    "request": "^2.85.0",
-    "request-promise": "^4.2.2",
-    "request-promise-any": "^1.0.5"
+    "lodash.get": "^4.4.2",
+    "request": "^2.85.0"
   },
   "devDependencies": {
     "@types/express": "^4.11.1",
     "@types/jasmine": "^2.8.6",
     "@types/node": "^9.6.5",
-    "@types/oauth": "^0.9.0",
     "@types/proxyquire": "^1.3.28",
-    "@types/request-promise": "^4.1.41",
+    "@types/request": "^2.47.0",
     "hoek": "^5.0.3",
     "istanbul": "^0.4.5",
     "jasmine-node": "^1.14.5",
