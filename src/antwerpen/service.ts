@@ -60,7 +60,7 @@ export = function createService(config: ServiceConfig):
             const { x, y } = doc.geometry;
             const latLng = lambertToLatLng(x, y);
             return {
-                id: doc.attributes.ID,
+                id: '' + doc.attributes.ID,
                 name: doc.attributes.STRAATNM + ' ' + doc.attributes.HUISNR,
                 street: doc.attributes.STRAATNM,
                 number: doc.attributes.HUISNR,
