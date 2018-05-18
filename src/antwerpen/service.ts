@@ -40,6 +40,9 @@ const getRequestOptions = (url: string, auth?: string) => {
     };
 };
 
+const sortByNameFn = (a: LocationItem, b: LocationItem) =>
+    a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+
 /**
  * Create a function that calls the CRAB and SOLR services and finds locations
  *
@@ -119,6 +122,9 @@ export = function createService(config: ServiceConfig):
     return (search: string, types: string = 'street,number,poi'): Promise<LocationItem[]> => {
         return new Promise((resolve, reject) => {
             const callback = (error: any, result: LocationItem[]) => {
+                if (result) {
+                    result = result.sort(sortByNameFn);
+                }
                 if (error) {
                     reject(error);
                 } else {
