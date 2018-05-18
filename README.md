@@ -25,7 +25,7 @@ const express = require('express');
 const app = express()
 const pickerHelper = require('@acpaas-ui-widgets/nodejs-location-picker');
 const controller = pickerHelper.antwerpen.createController({
-    solrAuthorization: '<auth key>',
+    solrGisAuthorization: '<auth key>',
     solrGisUrl: 'https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search',
     crabUrl: 'https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query'
 });

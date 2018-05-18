@@ -1,12 +1,12 @@
-import { Response, RequestCallback } from "request";
+import { RequestCallback, Response} from "request";
 
-const getProp = require('lodash.get');
+import getProp = require('lodash.get');
 
-export type handleResponseFn<T> = (error: any, result?: Array<T>) => any;
+export type handleResponseFn<T> = (error: any, result?: T[]) => any;
 
 export function handleResponse<T>(
-  key: string, 
-  mapper: (v: any) => T, 
+  key: string,
+  mapper: (v: any) => T,
   callback: handleResponseFn<T>
 ): RequestCallback {
   return (error: any, response: Response, body: any) => {

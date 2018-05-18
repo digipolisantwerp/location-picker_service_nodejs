@@ -7,7 +7,7 @@ const isSpecial = (c: string) => /[_\-']/.test(c);
 
 /**
  * Filter an input string to keep only characters that are sql-safe
- * @param s 
+ * @param s String to filter
  */
 export default function filterSqlVar(s: string): string {
     return s.split('').filter((c: string) =>

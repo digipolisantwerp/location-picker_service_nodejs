@@ -64,7 +64,7 @@ describe('antwerpen', () => {
                 }
             });
             const fn = createService({
-                solrAuthorization: solrTestAuth,
+                solrGisAuthorization: solrTestAuth,
                 solrGisUrl: solrTestUrl,
                 crabUrl: crabTestUrl            
             });
@@ -85,7 +85,7 @@ describe('antwerpen', () => {
                 }
             });
             const fn = createService({
-                solrAuthorization: solrTestAuth,
+                solrGisAuthorization: solrTestAuth,
                 solrGisUrl: solrTestUrl,
                 crabUrl: crabTestUrl            
             });

@@ -1,5 +1,5 @@
-import antwerpen = require('./antwerpen')
+import antwerpen = require('./antwerpen');
 
 export = {
     antwerpen
-}
+};

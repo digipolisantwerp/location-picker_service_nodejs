@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 import { LocationItem } from '../types';
 import createService = require('./service');
@@ -12,7 +12,7 @@ const createController = (config: ServiceConfig) => {
         }).catch((error: any) => {
             next(error);
         });
-    }
-}
+    };
+};
 
 export = createController;

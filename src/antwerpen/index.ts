@@ -1,7 +1,7 @@
-import createService = require('./service');
 import createController = require('./controller');
+import createService = require('./service');
 
 export {
-    createService, 
+    createService,
     createController
-}
+};
