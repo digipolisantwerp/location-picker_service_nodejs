@@ -33,7 +33,7 @@ app.get('/api/locations', controller);
 app.listen(9999);
 ```
 
-You can obtain credentials for the SOLR API by asking on the [#acpaas-ui slack channel](https://dgpls.slack.com/messages/C4M60PQJF).
+The default SOLR endpoint (esb-app1-p) listed above does not require authorization, so you can leave the solrGisAuthorization property blank when using that url.
 
 The library provides the following interface:
 
@@ -48,7 +48,7 @@ Create a .env file containing:
 ```sh
 PORT=9999
 SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
-SOLR_AUTHORIZATION=<auth key here>
+SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
 ```
 
