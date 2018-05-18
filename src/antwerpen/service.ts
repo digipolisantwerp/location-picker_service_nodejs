@@ -97,17 +97,20 @@ export = function createService(config: ServiceConfig):
                 latLng = lambertToLatLng(x, y);
             }
             const isStreet = doc.layer === 'straatnaam';
-            return {
+            const result: LocationItem = {
                 id: doc.key,
                 name: doc.name,
                 layer: doc.layer,
-                street: isStreet ? doc.name : null,
                 locationType: isStreet ? 'street' : 'poi',
                 coordinates: {
                     latLng,
                     lambert: { x, y }
                 }
             };
+            if (isStreet) {
+                result.street = doc.name;
+            }
+            return result;
         }, callback);
 
         request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
