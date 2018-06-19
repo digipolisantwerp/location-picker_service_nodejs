@@ -3,7 +3,7 @@ import filterSqlVar from '../helpers/filterSqlVar';
 import { handleResponse, handleResponseFn } from '../helpers/handleResponse';
 import lambertToLatLng from '../helpers/lambertToLatLng';
 import { LatLngCoordinate, LocationItem } from '../types';
-import { ServiceConfig } from './types';
+import { LocationServiceConfig } from './types';
 
 const getStreetAndNr = (search: string = '') => {
     const parts = search.split(' ');
@@ -48,11 +48,10 @@ const sortByNameFn = (a: LocationItem, b: LocationItem) =>
  *
  * matching a search string and for a specific set of location types (street, number, poi)
  */
-export = function createService(config: ServiceConfig):
+export function createLocationService(config: LocationServiceConfig):
     (search: string, types: string) => Promise<LocationItem[]> {
 
-    const getAddress = (
-        street: string, num: string, callback: handleResponseFn<LocationItem>) => {
+    const getAddress = (street: string, num: string, callback: handleResponseFn<LocationItem>) => {
 
         // quotes need to be doubled for escaping into sql
         street = encodeURIComponent(filterSqlVar(street).replace(/'/g, "''"));

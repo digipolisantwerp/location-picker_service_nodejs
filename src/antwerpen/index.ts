@@ -1,7 +1,8 @@
-import createController = require('./controller');
-import createService = require('./service');
+import {locationSearch, coordinateSearch} from './controller';
+import createLocationService = require('./location.service');
 
 export {
-    createService,
-    createController
+    createLocationService,
+    locationSearch,
+    coordinateSearch
 };

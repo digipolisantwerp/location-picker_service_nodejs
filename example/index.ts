@@ -13,11 +13,20 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.get('/api/locations', lib.antwerpen.createController({
+var locationSearch = lib.antwerpen.locationSearch({
     solrGisAuthorization: process.env.SOLR_GIS_AUTHORIZATION,
     solrGisUrl: process.env.SOLR_GIS_URL,
     crabUrl: process.env.CRAB_URL
-}));
+})
+
+app.get('/api/locations', locationSearch);
+
+
+var locationSearch = lib.antwerpen.coordinateSearch({
+    url: process.env.SOLR_GIS_AUTHORIZATION,
+})
+
+app.get('/api/coordinates', locationSearch)
 
 const port = process.env.PORT || 9999;
 app.listen(port, () =>
