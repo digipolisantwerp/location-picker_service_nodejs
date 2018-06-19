@@ -1,0 +1,6 @@
+{ 
+    "watch": ["example", "src"], 
+    "ignore": ["test"], 
+    "exec": "ts-node example/index.ts",
+    "ext": "js,json,ts"
+}
