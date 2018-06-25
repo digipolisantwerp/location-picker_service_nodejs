@@ -59,7 +59,7 @@ export = function createService(config: ServiceConfig):
         num = encodeURIComponent(filterSqlVar(num));
         const url = config.crabUrl +
             "?f=json&orderByFields=HUISNR&where=GEMEENTE='Antwerpen' and " +
-            `STRAATNM='${street}' and HUISNR='${num}' ` +
+            `STRAATNM LIKE '${street}%' and HUISNR='${num}' ` +
             "and APPTNR='' and BUSNR=''&outFields=*";
         const responseHandler = handleResponse('features', (doc: any): LocationItem => {
             const { x, y } = doc.geometry;
@@ -112,6 +112,13 @@ export = function createService(config: ServiceConfig):
             };
             if (isStreet) {
                 result.street = doc.name;
+            }
+            if (doc.districts && doc.districts.length) {
+                const district = doc.districts[0];
+                if (typeof district === "string") {
+                    result.district = district;
+                    result.name += " (" + district + ")";
+                }
             }
             return result;
         }, callback);
