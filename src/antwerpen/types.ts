@@ -1,5 +1,5 @@
 export interface CoordinateServiceConfig {
-    url: string;
+    query_by_location_url: string;
 }
 
 export interface LocationServiceConfig {

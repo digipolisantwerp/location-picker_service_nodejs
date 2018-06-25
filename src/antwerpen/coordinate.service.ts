@@ -1,33 +1,11 @@
-import request = require('request');
+import requestPromise = require("request-promise");
+import merc = require("mercator-projection");
 import filterSqlVar from '../helpers/filterSqlVar';
 import { handleResponse, handleResponseFn } from '../helpers/handleResponse';
 import lambertToLatLng from '../helpers/lambertToLatLng';
 import { LatLngCoordinate, LocationItem } from '../types';
 import { CoordinateServiceConfig } from './types';
-
-const getStreetAndNr = (search: string = '') => {
-    const parts = search.split(' ');
-    const result = {
-        street: '',
-        num: '',
-    };
-
-    parts.forEach((part, index) => {
-        const matches = /^[0-9]/.exec(part);
-        if ((index > 0) && matches) {
-            if (!!result.num || matches.index === 0) {
-                result.num += part + '';
-                return;
-            }
-        }
-        if (result.street) {
-            result.street += ' ';
-        }
-        result.street += part;
-    });
-
-    return result;
-};
+import * as Promise from 'bluebird';
 
 const getRequestOptions = (url: string, auth?: string) => {
     return {
@@ -40,9 +18,6 @@ const getRequestOptions = (url: string, auth?: string) => {
     };
 };
 
-const sortByNameFn = (a: LocationItem, b: LocationItem) =>
-    a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-
 /**
  * Create a function that calls the CRAB and SOLR services and finds locations
  *
@@ -51,7 +26,22 @@ const sortByNameFn = (a: LocationItem, b: LocationItem) =>
 export function createCoordinateService(config: CoordinateServiceConfig):
     (lon: number, lat: number) => Promise<LocationItem[]> {
 
+    const getPark = (lon: number = 0.0, lat: number = 0.0): Promise<LocationItem[]> => {
+        const url = "https://querybylocation-a.antwerpen.be/querybylocation/pointwhitin" +
+            "?url=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify" +
+            "&sr=4326" +
+            "&tolerance=3" +
+            "&layerids=21" +
+            "&x=" + lon +
+            "&y=" + lat;
+
+        return requestPromise(getRequestOptions(url))
+            .then(() => {
+                return Promise.resolve([]);
+            })
+    }
+
     return (lon: number = 0.0, lat: number = 0.0): Promise<LocationItem[]> => {
-        return Promise.resolve([]);
+        return getPark(lon, lat);
     };
 };

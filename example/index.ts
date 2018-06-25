@@ -21,9 +21,8 @@ var locationSearch = lib.antwerpen.locationSearch({
 
 app.get('/api/locations', locationSearch);
 
-
 var locationSearch = lib.antwerpen.coordinateSearch({
-    url: process.env.SOLR_GIS_AUTHORIZATION,
+    query_by_location_url: process.env.QUERY_BY_LOCATION_URL,
 })
 
 app.get('/api/coordinates', locationSearch)
