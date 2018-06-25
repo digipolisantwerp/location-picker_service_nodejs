@@ -14,10 +14,12 @@ export interface LocationItem {
     /** the layer that the result came from (in the underlying data repository) */
     layer?: string;
     /** the coordinates of this location */
-    coordinates?: {
-        latLng?: LatLngCoordinate;
-        lambert?: LambertCoordinate;
-    };
+    coordinates?: Coordinates;
+}
+
+export interface Coordinates {
+    latLng?: LatLngCoordinate;
+    lambert?: LambertCoordinate;
 }
 
 export interface LambertCoordinate {

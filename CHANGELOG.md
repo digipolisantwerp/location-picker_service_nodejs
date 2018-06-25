@@ -13,21 +13,32 @@ All notable changes to this project will be documented in this file.
 "### Security" in case of vulnerabilities.
 -->
 
+## [2.0.0] - 2018-06-25
+
+### Changed
+
+- #1 remove coordinates field form response if result has no coordinates
+- #1 return SOLR id field instead of key field
+
 ## [1.1.0] - 2018-06-22
 
 ### Changed
 
-- indicate district of streets in label (where possible)
+- digipolisantwerp/location-picker_widget_angular#1 indicate district of streets in label (where possible)
 
 ### Fixed
 
-- fix missing results for "turnhoutsebaan 1"
-- fix security issue
+- digipolisantwerp/location-picker_widget_angular#1 fix missing results for "turnhoutsebaan 1"
+
+### Security
+
+- fix security issue in build tools
 
 ## [1.0.1] - 2018-05-18
 
 - Initial release.
 
-[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.0.2...v1.1.0
 [1.0.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v0.0.1...v1.0.1
