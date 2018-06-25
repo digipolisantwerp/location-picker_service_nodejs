@@ -17,18 +17,18 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- #1 remove coordinates field form response if result has no coordinates
-- #1 return SOLR id field instead of key field
+- remove coordinates field form response if result has no coordinates [#1](https://github.com/digipolisantwerp/location-picker_service_nodejs/issues/1)
+- return SOLR id field instead of key field [#1](https://github.com/digipolisantwerp/location-picker_service_nodejs/issues/1)
 
 ## [1.1.0] - 2018-06-22
 
 ### Changed
 
-- digipolisantwerp/location-picker_widget_angular#1 indicate district of streets in label (where possible)
+- indicate district of streets in label (where possible) [location-picker_widget_angular#1](https://github.com/digipolisantwerp/location-picker_widget_angular/issues/1)
 
 ### Fixed
 
-- digipolisantwerp/location-picker_widget_angular#1 fix missing results for "turnhoutsebaan 1"
+- fix missing results for "turnhoutsebaan 1" [location-picker_widget_angular#1](https://github.com/digipolisantwerp/location-picker_widget_angular/issues/1)
 
 ### Security
 
