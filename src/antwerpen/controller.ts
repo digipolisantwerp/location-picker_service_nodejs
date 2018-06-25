@@ -21,7 +21,10 @@ export let locationSearch = locationSearchController;
 const coordinateSearchController = (config: CoordinateServiceConfig) => {
     const service = createCoordinateService(config);
     return (req: Request, res: Response, next: NextFunction) => {
-        service(req.query.lon, req.query.lat).then((result: LocationItem[]) => {
+        service(req.query.lon, req.query.lat).then((result: LocationItem) => {
+            console.log('---------------------------------------------');
+            console.log(result);
+            console.log('---------------------------------------------');
             res.json(result);
         }).catch((error: any) => {
             next(error);
