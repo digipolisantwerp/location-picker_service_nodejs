@@ -6,7 +6,7 @@
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "target": "es6",
     "lib": [
       "es2017"

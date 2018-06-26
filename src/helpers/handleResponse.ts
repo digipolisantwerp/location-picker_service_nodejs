@@ -10,6 +10,9 @@ export function handleResponse<T>(
   callback: handleResponseFn<T>
 ): RequestCallback {
   return (error: any, response: Response, body: any) => {
+      console.log('---------------------------------------------');
+      console.log(error);
+      console.log('---------------------------------------------');
     if (error || (body && body.error) || typeof body === 'string') {
       if (typeof body !== 'string') {
         body = JSON.stringify(body);
