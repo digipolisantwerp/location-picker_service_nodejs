@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { LocationItem } from '../../types';
-import createCoordinateService = require('./coordinate.service');
+import { CoordinateService } from './coordinate.service';
 import { CoordinateServiceConfig } from '../types';
 
 const coordinateSearchController = (config: CoordinateServiceConfig) => {
-    const service = createCoordinateService(config);
+    const service = new CoordinateService(config);
     return (req: Request, res: Response, next: NextFunction) => {
-        service(req.query.lng, req.query.lat).then((result: LocationItem) => {
-            res.json(result);
+        service.getLocation(req.query.lng, req.query.lat).then((result: LocationItem) => {
+            res.json({ location: result });
         }).catch((error: any) => {
             next(error);
         });

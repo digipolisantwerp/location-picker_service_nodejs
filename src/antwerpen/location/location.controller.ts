@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { LocationItem } from '../../types';
 import createLocationService = require ('./location.service');
-import { CoordinateServiceConfig, LocationServiceConfig } from '../types';
+import { LocationServiceConfig } from '../types';
 
 const locationSearchController = (config: LocationServiceConfig) => {
     const service = createLocationService(config);
