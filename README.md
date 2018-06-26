@@ -24,7 +24,7 @@ Express example:
 const express = require('express');
 const app = express()
 const pickerHelper = require('@acpaas-ui-widgets/nodejs-location-picker');
-var locationSearch = lib.antwerpen.locationSearch({
+var locationSearch = lib.antwerpen.locationSearchController({
     solrGisAuthorization: process.env.SOLR_GIS_AUTHORIZATION,
     solrGisUrl: process.env.SOLR_GIS_URL,
     crabUrl: process.env.CRAB_URL
@@ -32,11 +32,9 @@ var locationSearch = lib.antwerpen.locationSearch({
 
 app.get('/api/locations', locationSearch);
 
-var locationSearch = lib.antwerpen.coordinateSearch({
+var locationSearch = lib.antwerpen.coordinateSearchController({
     queryUrl: process.env.QUERY_URL
 })
-
-app.get('/api/coordinates', locationSearch)
 
 app.get('/api/coordinates', locationSearch)
 app.listen(9999);

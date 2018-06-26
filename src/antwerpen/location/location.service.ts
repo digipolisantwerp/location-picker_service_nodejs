@@ -1,9 +1,9 @@
 import request = require('request');
-import filterSqlVar from '../helpers/filterSqlVar';
-import { handleResponse, handleResponseFn } from '../helpers/handleResponse';
-import lambertToLatLng from '../helpers/lambertToLatLng';
-import { LatLngCoordinate, LocationItem, LocationType } from '../types';
-import { LocationServiceConfig } from './types';
+import filterSqlVar from '../../helpers/filterSqlVar';
+import { handleResponse, handleResponseFn } from '../../helpers/handleResponse';
+import lambertToLatLng from '../../helpers/lambertToLatLng';
+import { LatLngCoordinate, LocationItem, LocationType } from '../../types';
+import { LocationServiceConfig } from '../types';
 
 const getStreetAndNr = (search: string = '') => {
     const parts = search.split(' ');
@@ -48,7 +48,7 @@ const sortByNameFn = (a: LocationItem, b: LocationItem) =>
  *
  * matching a search string and for a specific set of location types (street, number, poi)
  */
-export function createLocationService(config: LocationServiceConfig):
+export = function createLocationService(config: LocationServiceConfig):
     (search: string, types: string) => Promise<LocationItem[]> {
 
     const getAddress = (street: string, num: string, callback: handleResponseFn<LocationItem>) => {

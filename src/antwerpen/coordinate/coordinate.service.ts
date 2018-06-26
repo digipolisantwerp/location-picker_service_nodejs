@@ -1,9 +1,9 @@
 import requestPromise = require("request-promise");
-import filterSqlVar from '../helpers/filterSqlVar';
-import { handleResponse, handleResponseFn } from '../helpers/handleResponse';
-import lambertToLatLng from '../helpers/lambertToLatLng';
-import { LatLngCoordinate, LocationItem, LocationType } from '../types';
-import { CoordinateServiceConfig } from './types';
+import filterSqlVar from '../../helpers/filterSqlVar';
+import { handleResponse, handleResponseFn } from '../../helpers/handleResponse';
+import lambertToLatLng from '../../helpers/lambertToLatLng';
+import { LatLngCoordinate, LocationItem, LocationType } from '../../types';
+import { CoordinateServiceConfig } from '../types';
 import * as Promise from 'bluebird';
 
 const getRequestOptions = (url: string, auth?: string) => {
@@ -22,7 +22,7 @@ const getRequestOptions = (url: string, auth?: string) => {
  *
  * matching a search string and for a specific set of location types (street, number, poi)
  */
-export function createCoordinateService(config: CoordinateServiceConfig):
+export = function createCoordinateService(config: CoordinateServiceConfig):
     (lng: number, lat: number) => Promise<LocationItem> {
 
     const getPark = (lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> => {
@@ -70,7 +70,7 @@ export function createCoordinateService(config: CoordinateServiceConfig):
     };
 
     const getPointWithin = (lng: number = 0.0, lat: number = 0.0, range: number = 20): Promise<LocationItem> => {
-        const url = "https://reversedgeocode-p.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
+        const url = "https://reversedgeocode-a.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
             "?sr=4326" +
             "&count=20" +
             "&buffer=" + range +
@@ -84,13 +84,19 @@ export function createCoordinateService(config: CoordinateServiceConfig):
                 }
 
                 const doc = response[0];
+                const { x, y } = doc.xy;
+                const latLng = lambertToLatLng(x, y);
                 const result: LocationItem = {
                     id: '' + doc.straatnmid,
                     name: doc.straatnm + (doc.huisnr ? (' ' + doc.huisnr) : ''),
                     street: doc.straatnm,
                     number: doc.huisnr,
                     postal: doc.postcode,
-                    locationType: LocationType.Street
+                    locationType: LocationType.Street,
+                    coordinates: {
+                        latLng,
+                        lambert: { x, y }
+                    }
                 };
 
                 return Promise.resolve(result);
