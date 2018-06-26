@@ -1,6 +1,6 @@
 export interface CoordinateServiceConfig {
-    /** URL of the CRAB address API */
-    crabUrl: string;
+    /** URL of the address API */
+    queryUrl: string;
 }
 
 export interface LocationServiceConfig {

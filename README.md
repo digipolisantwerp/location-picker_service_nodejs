@@ -33,8 +33,10 @@ var locationSearch = lib.antwerpen.locationSearch({
 app.get('/api/locations', locationSearch);
 
 var locationSearch = lib.antwerpen.coordinateSearch({
-    crabUrl: process.env.CRAB_URL
+    queryUrl: process.env.QUERY_URL
 })
+
+app.get('/api/coordinates', locationSearch)
 
 app.get('/api/coordinates', locationSearch)
 app.listen(9999);
@@ -57,6 +59,8 @@ PORT=9999
 SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
 SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
+
+QUERY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
 ```
 
 Run the service:
@@ -67,6 +71,7 @@ Run the service:
 ```
 
 Test by browsing to [localhost:9999/api/locations?search=general armstrongweg 1](http://localhost:9999/api/locations?search=generaal%20armstrongweg%201).
+Test by browsing to [localhost:9999/api/coordinates?lng=51.196541&lat=4.421896](http://localhost:9999/api/coordinates?lng=51.196541&lat=4.421896).
 
 The UI demo app expects the service to run on port 9999.
 

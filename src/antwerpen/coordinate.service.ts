@@ -27,7 +27,7 @@ export function createCoordinateService(config: CoordinateServiceConfig):
 
     const getPark = (lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> => {
         const url = "https://querybylocation.antwerpen.be/querybylocation/pointwhitin" +
-            "?url=" + config.crabUrl +
+            "?url=" + config.queryUrl +
             "&sr=4326" +
             "&tolerance=0" +
             "&layerids=21" +
@@ -86,7 +86,7 @@ export function createCoordinateService(config: CoordinateServiceConfig):
                 const doc = response[0];
                 const result: LocationItem = {
                     id: '' + doc.straatnmid,
-                    name: doc.straatnm + (doc.huisnr ? ('' + doc.huisnr) : ''),
+                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.huisnr) : ''),
                     street: doc.straatnm,
                     number: doc.huisnr,
                     postal: doc.postcode,
@@ -99,7 +99,7 @@ export function createCoordinateService(config: CoordinateServiceConfig):
 
     const getNearby = (lng: number = 0.0, lat: number = 0.0, range: number = 5): Promise<LocationItem> => {
         const url = "https://querybylocation.antwerpen.be/querybylocation/pointnearby" +
-            "?url=" + config.crabUrl +
+            "?url=" + config.queryUrl +
             "&sr=4326" +
             "&tolerance=0" +
             "&range=" + range +
@@ -115,7 +115,7 @@ export function createCoordinateService(config: CoordinateServiceConfig):
                 const doc = response[0];
                 const result: LocationItem = {
                     id: '' + doc.straatnmid,
-                    name: doc.straatnm + (doc.huisnr ? ('' + doc.huisnr) : ''),
+                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.huisnr) : ''),
                     street: doc.straatnm,
                     number: doc.huisnr,
                     postal: doc.postcode,
