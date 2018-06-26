@@ -27,7 +27,6 @@
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "lodash.get": "^4.4.2",
-    "mercator-projection": "0.0.2",
     "request": "^2.85.0",
     "request-promise": "^4.2.2"
   },

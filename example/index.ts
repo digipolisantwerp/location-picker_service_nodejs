@@ -22,7 +22,7 @@ var locationSearch = lib.antwerpen.locationSearch({
 app.get('/api/locations', locationSearch);
 
 var locationSearch = lib.antwerpen.coordinateSearch({
-    query_by_location_url: process.env.QUERY_BY_LOCATION_URL,
+    crabUrl: process.env.CRAB_URL
 })
 
 app.get('/api/coordinates', locationSearch)

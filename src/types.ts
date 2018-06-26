@@ -10,7 +10,7 @@ export interface LocationItem {
     /** the street postal (not a number, may contain letters) */
     postal?: string;
     /** the type of location item this is, number means street address */
-    locationType: "street" | "number" | "poi";
+    locationType: LocationType;
     /** the layer that the result came from (in the underlying data repository) */
     layer?: string;
     /** the coordinates of this location */
@@ -19,7 +19,7 @@ export interface LocationItem {
         lambert?: LambertCoordinate;
     };
 
-    polygon?: any[];
+    polygons?: LatLngCoordinate[][];
 }
 
 export interface LambertCoordinate {
@@ -30,4 +30,11 @@ export interface LambertCoordinate {
 export interface LatLngCoordinate {
     lat: number;
     lng: number;
+}
+
+export enum LocationType {
+    Street = "STREET",
+    Number = "NUMBER",
+    Poi = "POI",
+    Park = "PARK"
 }

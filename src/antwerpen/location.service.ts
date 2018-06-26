@@ -2,7 +2,7 @@ import request = require('request');
 import filterSqlVar from '../helpers/filterSqlVar';
 import { handleResponse, handleResponseFn } from '../helpers/handleResponse';
 import lambertToLatLng from '../helpers/lambertToLatLng';
-import { LatLngCoordinate, LocationItem } from '../types';
+import { LatLngCoordinate, LocationItem, LocationType } from '../types';
 import { LocationServiceConfig } from './types';
 
 const getStreetAndNr = (search: string = '') => {
@@ -68,7 +68,7 @@ export function createLocationService(config: LocationServiceConfig):
                 name: doc.attributes.STRAATNM + ' ' + doc.attributes.HUISNR,
                 street: doc.attributes.STRAATNM,
                 number: doc.attributes.HUISNR,
-                locationType: 'number',
+                locationType: LocationType.Number,
                 layer: 'CRAB',
                 coordinates: {
                     latLng,
@@ -103,7 +103,7 @@ export function createLocationService(config: LocationServiceConfig):
                 id: doc.key,
                 name: doc.name,
                 layer: doc.layer,
-                locationType: isStreet ? 'street' : 'poi',
+                locationType: isStreet ? LocationType.Street : LocationType.Poi,
                 coordinates: {
                     latLng,
                     lambert: { x, y }
@@ -145,4 +145,4 @@ export function createLocationService(config: LocationServiceConfig):
             }
         });
     };
-};
+}
