@@ -61,8 +61,8 @@ PORT=9999
 SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
 SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
-
-QUERY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
+OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
+MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Mobiliteit/MapServer/6/query
 ```
 
 Run the service:
@@ -79,13 +79,15 @@ The UI demo app expects the service to run on port 9999.
 
 ## Service Specification
 
-The service implements the following protocol:
+The service implements the following first protocol:
 
 - GET /path/to/endpoint?search=...&types=...
 - search = the text that the user typed on which to match
 - types = types to query for
   - Possible types are `street` (street names), `number` (address excluding bus) and `poi` (point of interest)- Comma-separated, default value is `street,number,poi`
 - result = JSON-encoded array of [LocationItem](src/types.ts) objects
+
+The service implements the following second protocol:
 
 - GET /path/to/endpoint?lat=...&lng=...
 - lat = latitude of the location
