@@ -13,6 +13,12 @@ export class CoordinateService {
         this.config = config;
     }
 
+    // CASCADE to find place
+    // 1) check if the location is a park
+    // 2) check if the location is a bicycle route
+    // 3) check if the location is a street
+    // 4) use reverse geocode as a last resort to match it with a location
+
     public getLocation(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
         return this.getPark(lng, lat)
             .then((park: LocationItem) => {
@@ -21,19 +27,27 @@ export class CoordinateService {
                     return Promise.resolve(park);
                 }
 
-                return this.getNearAddress(lng, lat, 20)
-                    .then((position: LocationItem) => {
-                        if (position) {
-                            return Promise.resolve(position);
+                return this.getBicycleRoute(lng, lat)
+                    .then((route: LocationItem) => {
+                        if (route) {
+                            return Promise.resolve(route);
                         }
+                        return this.getStreet(lng, lat)
+                            .then((street: LocationItem) => {
+                                if (street) {
+                                    return Promise.resolve(street);
+                                }
 
-                        return this.getStreet(lng, lat);
+                                return this.getNearestAddress(lng, lat);
+                            });
                     });
             });
     }
 
     private getPark(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
-        return this.getPointWithin(lng, lat, 0, 21, this.config.openSpaceUrl)
+        const tolerance = 0;
+        const layerId = 21;
+        return this.getPointWithin(lng, lat, tolerance, layerId, this.config.openSpaceUrl)
             .then((response: any) => {
                 if (!response || !response.results || !response.results.length) {
                     return Promise.resolve(undefined);
@@ -48,7 +62,7 @@ export class CoordinateService {
                     number: doc.attributes.HUISNR,
                     postal: doc.attributes.POSTCODE,
                     locationType: LocationType.Park,
-                    polygons: rings.map((ring: any[]) => {
+                    polygons: rings ? rings.map((ring: any[]) => {
                         return ring.map((x: any[]) => {
                             if (x.length < 1) {
                                 return undefined;
@@ -60,30 +74,69 @@ export class CoordinateService {
                             };
                         })
                             // filter out the undefined values
-                            .filter((x) => x)
-                    })
+                            .filter((x) => x);
+                    }) : []
                 };
 
                 return Promise.resolve(result);
             });
     }
 
-    private getNearAddress(lng: number = 0.0, lat: number = 0.0, range: number = 20): Promise<LocationItem> {
-        return this.reverseGeocode(lng, lat, range)
+    private getBicycleRoute(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
+        const tolerance = 1;
+        const layerId = 6;
+        return this.getPointWithin(lng, lat, tolerance, layerId, this.config.mobilityUrl)
             .then((response: any) => {
-                if (!response || !response.length) {
+                if (!response || !response.results || !response.results.length) {
                     return Promise.resolve(undefined);
                 }
 
-                const doc = response[0];
-                const { x, y } = doc.xy;
+                const doc = response.results[0];
+                const { paths } = doc.geometry;
+                const result: LocationItem = {
+                    id: '' + doc.attributes.ObjectID,
+                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? ('' + doc.attributes.HUISNR) : ''),
+                    street: doc.attributes.STRAAT,
+                    number: doc.attributes.HUISNR,
+                    postal: doc.attributes.postcode_links,
+                    locationType: LocationType.BicycleRoute,
+                    polygons: paths ? paths.map((ring: any[]) => {
+                        return ring.map((x: any[]) => {
+                            if (x.length < 1) {
+                                return undefined;
+                            }
+
+                            return {
+                                lng: x[1],
+                                lat: x[0]
+                            };
+                        })
+                            // filter out the undefined values
+                            .filter((x) => x);
+                    }) : []
+                };
+
+                return Promise.resolve(result);
+            });
+    }
+
+    private getStreet(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
+        const range = 20;
+        return this.getPointNearby(lng, lat, range, this.config.crabUrl)
+            .then((response: any) => {
+                if (!response || !response.features || !response.features.length) {
+                    return Promise.resolve(undefined);
+                }
+
+                const doc = response.features[0];
+                const { x, y } = doc.geometry;
                 const latLng = lambertToLatLng(x, y);
                 const result: LocationItem = {
-                    id: '' + doc.straatnmid,
-                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.huisnr) : ''),
-                    street: doc.straatnm,
-                    number: doc.huisnr,
-                    postal: doc.postcode,
+                    id: '' + doc.attributes.OBJECTID,
+                    name: doc.attributes.STRAATNM + (doc.attributes.HUISNR ? ('' + doc.attributes.HUISNR) : ''),
+                    street: doc.attributes.STRAATNM,
+                    number: doc.attributes.HUISNR,
+                    postal: doc.attributes.POSTCODE,
                     locationType: LocationType.Street,
                     coordinates: {
                         latLng,
@@ -95,42 +148,28 @@ export class CoordinateService {
             });
     }
 
-    private getStreet(lng: number = 0.0, lat: number = 0.0, range: number = 5): Promise<LocationItem> {
-        return this.getPointNearby(lng, lat, range, this.config.crabUrl)
+    private getNearestAddress(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
+        const range = 20
+        return this.reverseGeocode(lng, lat, range)
             .then((response: any) => {
-                if (!response) {
+                if (!response || !response.length) {
                     return Promise.resolve(undefined);
                 }
-                //TODO PARSE TO CORRECT FORMAT
+
                 const doc = response[0];
+                const { x, y } = doc.xy;
+                const latLng = lambertToLatLng(x, y);
                 const result: LocationItem = {
                     id: '' + doc.straatnmid,
-                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.huisnr) : ''),
+                    name: doc.straatnm + (doc.huisnr ? ('' + doc.straatnm) : ''),
                     street: doc.straatnm,
                     number: doc.huisnr,
                     postal: doc.postcode,
-                    locationType: LocationType.Street
-                };
-
-                return Promise.resolve(result);
-            });
-    }
-
-    private getBicycle(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
-        return this.getPointWithin(lng, lat, 20, 6, this.config.mobilityUrl)
-            .then((response: any) => {
-                if (!response) {
-                    return Promise.resolve(undefined);
-                }
-                //TODO PARSE TO CORRECT FORMAT
-                const doc = response[0];
-                const result: LocationItem = {
-                    id: '' + doc.straatnmid,
-                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.huisnr) : ''),
-                    street: doc.straatnm,
-                    number: doc.huisnr,
-                    postal: doc.postcode,
-                    locationType: LocationType.Street
+                    locationType: LocationType.Street,
+                    coordinates: {
+                        latLng,
+                        lambert: { x, y }
+                    }
                 };
 
                 return Promise.resolve(result);

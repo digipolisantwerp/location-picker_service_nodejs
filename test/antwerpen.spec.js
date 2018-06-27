@@ -1,5 +1,6 @@
 const proxyquire = require('proxyquire');
 const sinon = require("sinon");
+const bluebird = require("bluebird");
 
 const {CoordinateService} = require('../dist/antwerpen/coordinate/coordinate.service');
 
@@ -118,7 +119,7 @@ describe('antwerpen', () => {
     });
 
     describe('coordinate', () => {
-        const dummyWithinResult = {
+        const dummyParkResult = {
             "results": [
                 {
                     "layerId": 21,
@@ -164,7 +165,126 @@ describe('antwerpen', () => {
                 }
             ]
         }
-
+        const dummyBicycleRouteResult = {
+            "results": [
+                {
+                    "layerId": 6,
+                    "layerName": "fietspad",
+                    "displayFieldName": "STRAAT",
+                    "value": "ITALIELEI",
+                    "attributes": {
+                        "STRAAT": "ITALIELEI",
+                        "objectsleutel": "FTP 002554",
+                        "straatcode": "20007216",
+                        "postcode_links": "2000",
+                        "postcode_rechts": "2000",
+                        "DISTRICT": "ANTWERPEN",
+                        "object_sleutel_straatas": "WGSO2000002554",
+                        "wegnummer": "N1",
+                        "wegklasse": "hoofdweg",
+                        "beginknoop": "WGKO2000005719",
+                        "eindknoop": "WGKO2000005832",
+                        "wegbevoegdheid": "gewest Nweg",
+                        "van_zijstr": "ITALI‰LEI 4",
+                        "tot_zijstr": "KORTE WINKELSTRAAT",
+                        "l_aardbeschrijving": "enkel",
+                        "l_type_nub": "vrijliggend",
+                        "l_materiaal": "beton",
+                        "l_breedte": "140",
+                        "l_tussenst": "niet overrijdbaar",
+                        "l_tussen": "160",
+                        "r_aardbeschrijving": "enkel",
+                        "r_type_nub": "vrijliggend",
+                        "r_materiaal": "beton",
+                        "r_breedte": "140",
+                        "r_tussenst": "niet overrijdbaar",
+                        "r_tussen": "640",
+                        "label": "enkel beide zijden",
+                        "shape": "Polyline",
+                        "ObjectID": "407",
+                        "shape.len": "2246,250689"
+                    },
+                    "geometryType": "esriGeometryPolyline",
+                    "geometry": {
+                        "paths": [
+                            [
+                                [
+                                    4.4167853940453936, 51.220671585044826
+                                ],
+                                [
+                                    4.4168755739820709, 51.220896724956141
+                                ]
+                            ],
+                            [
+                                [
+                                    4.4161915368535301, 51.22068351319092
+                                ],
+                                [
+                                    4.4162467185925696, 51.22082616340645
+                                ]
+                            ],
+                            [
+                                [
+                                    4.4143851559795557, 51.226162220313206
+                                ],
+                                [
+                                    4.4143151943969228, 51.226330644794658
+                                ]
+                            ]
+                        ],
+                        "spatialReference": {
+                            "wkid": 4326,
+                            "latestWkid": 4326
+                        }
+                    }
+                }
+            ]
+        }
+        const dummyStreetResult = {
+            "displayFieldName": "HUISNR",
+            "fieldAliases": {
+                "HUISNR": "huisnr",
+                "STRAATNMID": "straatnmid",
+                "STRAATNM": "straatnm",
+                "HNRLABEL": "hnrlabel",
+                "OBJECTID": "ObjectID",
+                "ID": "ID",
+                "APPTNR": "APPTNR",
+                "BUSNR": "BUSNR",
+                "NISCODE": "NISCODE",
+                "GEMEENTE": "GEMEENTE",
+                "POSTCODE": "POSTCODE",
+                "HERKOMST": "HERKOMST"
+            },
+            "geometryType": "esriGeometryPoint",
+            "spatialReference": {
+                "wkid": 4326,
+                "latestWkid": 4326
+            },
+            "fields": [],
+            "features": [
+                {
+                    "attributes": {
+                        "HUISNR": "6",
+                        "STRAATNMID": 2124,
+                        "STRAATNM": "Noorderplaats",
+                        "HNRLABEL": "6",
+                        "OBJECTID": 42975,
+                        "ID": 2004281641,
+                        "APPTNR": " ",
+                        "BUSNR": " ",
+                        "NISCODE": "11002",
+                        "GEMEENTE": "Antwerpen",
+                        "POSTCODE": "2000",
+                        "HERKOMST": "manueleAanduidingVanIngangVanGebouw"
+                    },
+                    "geometry": {
+                        "x": 4.4136837928344992,
+                        "y": 51.230604244600464
+                    }
+                }
+            ]
+        }
         const dummyReverseGeocode = [
             {
                 "straatnmid": 599,
@@ -213,27 +333,68 @@ describe('antwerpen', () => {
             })
 
             it('should return a park location with the correct properties', (done) => {
-                coordinateService.expects("getPointWithin").resolves(dummyWithinResult);
+                coordinateService.expects("getPointWithin").resolves(dummyParkResult);
 
                 const lng = "123";
                 const lat = "321";
 
                 service.getLocation(lng, lat).then((result) => {
                     expect(result).not.toBeNull();
-                    expect(result.id).toEqual(dummyWithinResult.results[0].attributes.OBJECTID);
-                    expect(result.street).toEqual(dummyWithinResult.results[0].attributes.STRAAT);
-                    expect(result.postal).toEqual(dummyWithinResult.results[0].attributes.POSTCODE);
+                    expect(result.id).toEqual(dummyParkResult.results[0].attributes.OBJECTID);
+                    expect(result.street).toEqual(dummyParkResult.results[0].attributes.STRAAT);
+                    expect(result.postal).toEqual(dummyParkResult.results[0].attributes.POSTCODE);
                     expect(result.locationType).toEqual("PARK");
                     expect(result.polygons).not.toBeNull();
-                    expect(result.polygons.length).toEqual(dummyWithinResult.results[0].geometry.rings.length);
-                    expect(result.polygons[0].length).toEqual(dummyWithinResult.results[0].geometry.rings[0].length);
+                    expect(result.polygons.length).toEqual(dummyParkResult.results[0].geometry.rings.length);
+                    expect(result.polygons[0].length).toEqual(dummyParkResult.results[0].geometry.rings[0].length);
 
                     done();
                 })
             });
 
-            it('should return a street location when no park was found + correct properties', (done) => {
-                coordinateService.expects("getPointWithin").resolves([]);
+            it('should return a bicycle route location when no park was found + correct properties', (done) => {
+                var stub = sinon.stub(service, 'getPointWithin');
+                stub.onFirstCall().resolves();
+                stub.onSecondCall().resolves(dummyBicycleRouteResult);
+
+                const lng = "123";
+                const lat = "321";
+
+                service.getLocation(lng, lat).then((result) => {
+                    expect(result).not.toBeNull();
+                    expect(result.id).toEqual(dummyBicycleRouteResult.results[0].attributes.ObjectID.toString());
+                    expect(result.street).toEqual(dummyBicycleRouteResult.results[0].attributes.STRAAT);
+                    expect(result.postal).toEqual(dummyBicycleRouteResult.results[0].attributes.postcode_links);
+                    expect(result.locationType).toEqual("BICYCLEROUTE");
+
+                    stub.restore();
+                    done();
+                })
+            });
+
+            it('should return a street route location when no park or bicycle route was found + correct properties', (done) => {
+                var stub = sinon.stub(service, 'getPointWithin');
+                stub.resolves();
+                coordinateService.expects("getPointNearby").resolves(dummyStreetResult);
+
+                const lng = "123";
+                const lat = "321";
+
+                service.getLocation(lng, lat).then((result) => {
+                    expect(result).not.toBeNull();
+                    expect(result.id).toEqual(dummyStreetResult.features[0].attributes.OBJECTID.toString());
+                    expect(result.street).toEqual(dummyStreetResult.features[0].attributes.STRAATNM);
+                    expect(result.postal).toEqual(dummyStreetResult.features[0].attributes.POSTCODE);
+                    expect(result.locationType).toEqual("STREET");
+
+                    stub.restore();
+                    done();
+                })
+            });
+
+            it('should return a street route location from reversegeocode when no park, bicycle route or street was found + correct properties', (done) => {
+                sinon.stub(service, 'getPointWithin').resolves();
+                coordinateService.expects("getPointNearby").resolves();
                 coordinateService.expects("reverseGeocode").resolves(dummyReverseGeocode);
 
                 const lng = "123";
@@ -246,19 +407,21 @@ describe('antwerpen', () => {
                     expect(result.postal).toEqual(dummyReverseGeocode[0].postcode);
                     expect(result.locationType).toEqual("STREET");
 
+                    sinon.restore();
                     done();
                 })
             });
 
-            it('should return nothing if no park or street is found', (done) => {
-                coordinateService.expects("getPointWithin").resolves([]);
-                coordinateService.expects("reverseGeocode").resolves([]);
+            it('should return no result when no park, bicycle route or street was found', (done) => {
+                sinon.stub(service, 'getPointWithin').resolves();
+                coordinateService.expects("getPointNearby").resolves();
+                coordinateService.expects("reverseGeocode").resolves();
 
                 const lng = "123";
                 const lat = "321";
 
                 service.getLocation(lng, lat).then((result) => {
-                    expect(result).toBeNull();
+                    expect(result).toBe();
                     done();
                 })
             });
