@@ -61,8 +61,8 @@ PORT=9999
 SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
 SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
-
-QUERY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
+OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
+MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Mobiliteit/MapServer/6/query
 ```
 
 Run the service:
