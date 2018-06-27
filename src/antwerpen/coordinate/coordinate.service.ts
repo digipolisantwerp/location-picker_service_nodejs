@@ -130,7 +130,6 @@ export class CoordinateService {
 
                 const doc = response.features[0];
                 const { x, y } = doc.geometry;
-                const latLng = lambertToLatLng(x, y);
                 const result: LocationItem = {
                     id: '' + doc.attributes.OBJECTID,
                     name: doc.attributes.STRAATNM + (doc.attributes.HUISNR ? (' ' + doc.attributes.HUISNR) : ''),
@@ -139,8 +138,10 @@ export class CoordinateService {
                     postal: doc.attributes.POSTCODE,
                     locationType: LocationType.Street,
                     coordinates: {
-                        latLng,
-                        lambert: { x, y }
+                        latLng: {
+                            lat: x,
+                            lng: y
+                        }
                     }
                 };
 
@@ -158,7 +159,6 @@ export class CoordinateService {
 
                 const doc = response[0];
                 const { x, y } = doc.xy;
-                const latLng = lambertToLatLng(x, y);
                 const result: LocationItem = {
                     id: '' + doc.straatnmid,
                     name: doc.straatnm + (doc.huisnr ? (' ' + doc.straatnm) : ''),
@@ -167,8 +167,10 @@ export class CoordinateService {
                     postal: doc.postcode,
                     locationType: LocationType.Street,
                     coordinates: {
-                        latLng,
-                        lambert: { x, y }
+                        latLng: {
+                            lat: x,
+                            lng: y
+                        }
                     }
                 };
 
