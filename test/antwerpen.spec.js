@@ -59,7 +59,7 @@ describe('antwerpen', () => {
                 'request': (options, handler) => {
                     expect(options.url).toEqual(
                         crabTestUrl + "?f=json&orderByFields=HUISNR&where=GEMEENTE='Antwerpen' and " + 
-                        "STRAATNM='generaal%20armstrongweg' and HUISNR='1' and APPTNR='' and BUSNR=''&outFields=*");
+                        "STRAATNM LIKE 'generaal%20armstrongweg%' and HUISNR='1' and APPTNR='' and BUSNR=''&outFields=*");
                     return handler(null, {statusCode: 200}, dummyCrabResult);
                 }
             });
@@ -92,7 +92,7 @@ describe('antwerpen', () => {
             fn(query).then((result) => {
                 expect(result).not.toBeNull();
                 expect(result.length).toEqual(1);
-                expect(result[0].id).toEqual("86232");
+                expect(result[0].id).toEqual("A_DA/Locaties/MapServer/18/86232");
             });
         });
     });
