@@ -19,32 +19,32 @@ export class CoordinateService {
     // 3) check if the location is a street
     // 4) use reverse geocode as a last resort to match it with a location
 
-    public getLocation(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
-        return this.getPark(lng, lat)
+    public getLocation(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
+        return this.getPark(lat, lng)
             .then((park: LocationItem) => {
                 // if a park is found, return the park
                 if (park) {
                     return Promise.resolve(park);
                 }
 
-                return this.getBicycleRoute(lng, lat)
+                return this.getBicycleRoute(lat, lng)
                     .then((route: LocationItem) => {
                         if (route) {
                             return Promise.resolve(route);
                         }
-                        return this.getStreet(lng, lat)
+                        return this.getStreet(lat, lng)
                             .then((street: LocationItem) => {
                                 if (street) {
                                     return Promise.resolve(street);
                                 }
 
-                                return this.getNearestAddress(lng, lat);
+                                return this.getNearestAddress(lat, lng);
                             });
                     });
             });
     }
 
-    private getPark(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
+    private getPark(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const tolerance = 0;
         const layerId = 21;
         return this.getPointWithin(lng, lat, tolerance, layerId, this.config.openSpaceUrl)
@@ -57,7 +57,7 @@ export class CoordinateService {
                 const { rings } = doc.geometry;
                 const result: LocationItem = {
                     id: '' + doc.attributes.OBJECTID,
-                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? ('' + doc.attributes.HUISNR) : ''),
+                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? (' ' + doc.attributes.HUISNR) : ''),
                     street: doc.attributes.STRAAT,
                     number: doc.attributes.HUISNR,
                     postal: doc.attributes.POSTCODE,
@@ -69,8 +69,8 @@ export class CoordinateService {
                             }
 
                             return {
-                                lng: x[1],
-                                lat: x[0]
+                                lat: x[1],
+                                lng: x[0]
                             };
                         })
                             // filter out the undefined values
@@ -82,10 +82,10 @@ export class CoordinateService {
             });
     }
 
-    private getBicycleRoute(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
-        const tolerance = 1;
+    private getBicycleRoute(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
+        const range = 100;
         const layerId = 6;
-        return this.getPointWithin(lng, lat, tolerance, layerId, this.config.mobilityUrl)
+        return this.getPointNearby(lng, lat, range, this.config.mobilityUrl)
             .then((response: any) => {
                 if (!response || !response.results || !response.results.length) {
                     return Promise.resolve(undefined);
@@ -95,7 +95,7 @@ export class CoordinateService {
                 const { paths } = doc.geometry;
                 const result: LocationItem = {
                     id: '' + doc.attributes.ObjectID,
-                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? ('' + doc.attributes.HUISNR) : ''),
+                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? (' ' + doc.attributes.HUISNR) : ''),
                     street: doc.attributes.STRAAT,
                     number: doc.attributes.HUISNR,
                     postal: doc.attributes.postcode_links,
@@ -107,8 +107,8 @@ export class CoordinateService {
                             }
 
                             return {
-                                lng: x[1],
-                                lat: x[0]
+                                lat: x[1],
+                                lng: x[0]
                             };
                         })
                             // filter out the undefined values
@@ -120,7 +120,7 @@ export class CoordinateService {
             });
     }
 
-    private getStreet(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
+    private getStreet(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const range = 20;
         return this.getPointNearby(lng, lat, range, this.config.crabUrl)
             .then((response: any) => {
@@ -133,7 +133,7 @@ export class CoordinateService {
                 const latLng = lambertToLatLng(x, y);
                 const result: LocationItem = {
                     id: '' + doc.attributes.OBJECTID,
-                    name: doc.attributes.STRAATNM + (doc.attributes.HUISNR ? ('' + doc.attributes.HUISNR) : ''),
+                    name: doc.attributes.STRAATNM + (doc.attributes.HUISNR ? (' ' + doc.attributes.HUISNR) : ''),
                     street: doc.attributes.STRAATNM,
                     number: doc.attributes.HUISNR,
                     postal: doc.attributes.POSTCODE,
@@ -148,7 +148,7 @@ export class CoordinateService {
             });
     }
 
-    private getNearestAddress(lng: number = 0.0, lat: number = 0.0): Promise<LocationItem> {
+    private getNearestAddress(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const range = 20
         return this.reverseGeocode(lng, lat, range)
             .then((response: any) => {
@@ -161,7 +161,7 @@ export class CoordinateService {
                 const latLng = lambertToLatLng(x, y);
                 const result: LocationItem = {
                     id: '' + doc.straatnmid,
-                    name: doc.straatnm + (doc.huisnr ? ('' + doc.straatnm) : ''),
+                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.straatnm) : ''),
                     street: doc.straatnm,
                     number: doc.huisnr,
                     postal: doc.postcode,
@@ -176,7 +176,7 @@ export class CoordinateService {
             });
     }
 
-    private getPointWithin(lng: number = 0.0, lat: number = 0.0, tolerance: number = 0, layerIds: number = 0, layerUrl: string) {
+    private getPointWithin(lat: number = 0.0, lng: number = 0.0, tolerance: number = 0, layerIds: number = 0, layerUrl: string) {
         const url = "https://querybylocation.antwerpen.be/querybylocation/pointwhitin" +
             "?url=" + layerUrl +
             "&sr=4326" +
@@ -188,7 +188,7 @@ export class CoordinateService {
         return requestPromise(this.getRequestOptions(url));
     }
 
-    private reverseGeocode(lng: number = 0.0, lat: number = 0.0, range: number = 20) {
+    private reverseGeocode(lat: number = 0.0, lng: number = 0.0, range: number = 20) {
         const url = "https://reversedgeocode-a.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
             "?sr=4326" +
             "&count=20" +
@@ -199,7 +199,7 @@ export class CoordinateService {
         return requestPromise(this.getRequestOptions(url));
     }
 
-    private getPointNearby(lng: number = 0.0, lat: number = 0.0, range: number = 5, layerUrl: string) {
+    private getPointNearby(lat: number = 0.0, lng: number = 0.0, range: number = 5, layerUrl: string) {
         const url = "https://querybylocation.antwerpen.be/querybylocation/pointnearby" +
             "?url=" + layerUrl +
             "&sr=4326" +
