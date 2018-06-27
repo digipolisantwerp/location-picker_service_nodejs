@@ -35,7 +35,9 @@ var locationSearch = lib.antwerpen.locationSearchController({
 app.get('/api/locations', locationSearch);
 
 var locationSearch = lib.antwerpen.coordinateSearchController({
-    queryUrl: process.env.QUERY_URL
+    crabUrl: process.env.CRAB_URL,
+    openSpaceUrl: process.env.OPEN_SPACE_URL,
+    mobilityUrl: process.env.MOBILITY_URL
 })
 
 app.get('/api/coordinates', locationSearch)
@@ -71,7 +73,7 @@ Run the service:
 ```
 
 Test by browsing to [localhost:9999/api/locations?search=general armstrongweg 1](http://localhost:9999/api/locations?search=generaal%20armstrongweg%201).
-Test by browsing to [localhost:9999/api/coordinates?lng=51.196541&lat=4.421896](http://localhost:9999/api/coordinates?lng=51.196541&lat=4.421896).
+Test by browsing to [localhost:9999/api/coordinates?lat=51.196541&lng=4.421896](http://localhost:9999/api/coordinates?lng=51.196541&lat=4.421896).
 
 The UI demo app expects the service to run on port 9999.
 
@@ -83,6 +85,11 @@ The service implements the following protocol:
 - search = the text that the user typed on which to match
 - types = types to query for
   - Possible types are `street` (street names), `number` (address excluding bus) and `poi` (point of interest)- Comma-separated, default value is `street,number,poi`
+- result = JSON-encoded array of [LocationItem](src/types.ts) objects
+
+- GET /path/to/endpoint?lat=...&lng=...
+- lat = latitude of the location
+- lng = longitutde of the location
 - result = JSON-encoded array of [LocationItem](src/types.ts) objects
 
 An [example swagger description](swagger-example.json) is included.
