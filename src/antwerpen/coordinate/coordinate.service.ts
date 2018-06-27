@@ -121,7 +121,7 @@ export class CoordinateService {
     }
 
     private getStreet(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
-        const range = 20;
+        const range = 10;
         return this.getPointNearby(lng, lat, range, this.config.crabUrl)
             .then((response: any) => {
                 if (!response || !response.features || !response.features.length) {
@@ -149,7 +149,7 @@ export class CoordinateService {
     }
 
     private getNearestAddress(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
-        const range = 20
+        const range = 100;
         return this.reverseGeocode(lng, lat, range)
             .then((response: any) => {
                 if (!response || !response.length) {
@@ -189,7 +189,7 @@ export class CoordinateService {
     }
 
     private reverseGeocode(lat: number = 0.0, lng: number = 0.0, range: number = 20) {
-        const url = "https://reversedgeocode-a.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
+        const url = "https://reversedgeocode-p.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
             "?sr=4326" +
             "&count=20" +
             "&buffer=" + range +
