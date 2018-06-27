@@ -1,5 +1,5 @@
 export interface LocationItem {
-    /** the unique of of this location */
+    /** the unique id of this location */
     id: string;
     /** the user-visible name of this location */
     name: string;
@@ -9,17 +9,21 @@ export interface LocationItem {
     number?: string;
     /** the street postal (not a number, may contain letters) */
     postal?: string;
+    /** the city district this street is in (if known) */
+    district?: string;
     /** the type of location item this is, number means street address */
     locationType: LocationType;
     /** the layer that the result came from (in the underlying data repository) */
     layer?: string;
     /** the coordinates of this location */
-    coordinates?: {
-        latLng?: LatLngCoordinate;
-        lambert?: LambertCoordinate;
-    };
-
+    coordinates?: Coordinates;
+    /** the polygon of this location */
     polygons?: LatLngCoordinate[][];
+}
+
+export interface Coordinates {
+    latLng?: LatLngCoordinate;
+    lambert?: LambertCoordinate;
 }
 
 export interface LambertCoordinate {

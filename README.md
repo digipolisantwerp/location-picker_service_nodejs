@@ -4,6 +4,8 @@ This is a Node.js backend service library to create a BFF service for the Locati
 
 There is a **demo service**, see below for instructions on running it.
 
+For a version history, including list of changes, check the [changelog](CHANGELOG.md).
+
 ## How to use
 
 ### Installing

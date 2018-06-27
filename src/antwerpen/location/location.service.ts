@@ -2,7 +2,7 @@ import request = require('request');
 import filterSqlVar from '../../helpers/filterSqlVar';
 import { handleResponse, handleResponseFn } from '../../helpers/handleResponse';
 import lambertToLatLng from '../../helpers/lambertToLatLng';
-import { LatLngCoordinate, LocationItem, LocationType } from '../../types';
+import { LatLngCoordinate, LocationItem, LocationType, Coordinates } from '../../types';
 import { LocationServiceConfig } from '../types';
 
 const getStreetAndNr = (search: string = '') => {
@@ -58,7 +58,7 @@ export = function createLocationService(config: LocationServiceConfig):
         num = encodeURIComponent(filterSqlVar(num));
         const url = config.crabUrl +
             "?f=json&orderByFields=HUISNR&where=GEMEENTE='Antwerpen' and " +
-            `STRAATNM='${street}' and HUISNR='${num}' ` +
+            `STRAATNM LIKE '${street}%' and HUISNR='${num}' ` +
             "and APPTNR='' and BUSNR=''&outFields=*";
         const responseHandler = handleResponse('features', (doc: any): LocationItem => {
             const { x, y } = doc.geometry;
@@ -93,24 +93,30 @@ export = function createLocationService(config: LocationServiceConfig):
             '?wt=json&rows=5&solrtype=gislocaties&dismax=true&bq=exactName:DISTRICT^20000.0' +
             '&bq=layer:straatnaam^20000.0' + `&q=(${encodeURIComponent(search)})`;
         const responseHandler = handleResponse('response.docs', (doc: any): LocationItem => {
-            let latLng: LatLngCoordinate;
-            const { x, y } = doc;
-            if (x && y) {
-                latLng = lambertToLatLng(x, y);
+            let coordinates: Coordinates;
+            if (doc && (doc.x || doc.y)) {
+                coordinates = {
+                    lambert: { x: doc.x, y: doc.y },
+                    latLng: lambertToLatLng(doc.x, doc.y)
+                };
             }
             const isStreet = doc.layer === 'straatnaam';
             const result: LocationItem = {
-                id: doc.key,
+                id: doc.id,
                 name: doc.name,
                 layer: doc.layer,
                 locationType: isStreet ? LocationType.Street : LocationType.Poi,
-                coordinates: {
-                    latLng,
-                    lambert: { x, y }
-                }
+                coordinates
             };
             if (isStreet) {
                 result.street = doc.name;
+            }
+            if (doc.districts && doc.districts.length) {
+                const district = doc.districts[0];
+                if (typeof district === "string") {
+                    result.district = district;
+                    result.name += " (" + district + ")";
+                }
             }
             return result;
         }, callback);
