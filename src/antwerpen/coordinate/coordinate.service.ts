@@ -161,7 +161,7 @@ export class CoordinateService {
                 const { x, y } = doc.xy;
                 const result: LocationItem = {
                     id: '' + doc.straatnmid,
-                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.straatnm) : ''),
+                    name: doc.straatnm + (doc.huisnr ? (' ' + doc.huisnr) : ''),
                     street: doc.straatnm,
                     number: doc.huisnr,
                     postal: doc.postcode,
