@@ -352,10 +352,32 @@ describe('antwerpen', () => {
                 })
             });
 
-            it('should return a bicycle route location when no park was found + correct properties', (done) => {
+            it('should return an address when no park is found', (done) => {
                 var stub = sinon.stub(service, 'getPointWithin');
                 stub.onFirstCall().resolves();
 
+                coordinateService.expects("reverseGeocode").resolves(dummyReverseGeocode);
+
+                const lng = "123";
+                const lat = "321";
+
+                service.getLocation(lng, lat).then((result) => {
+                    expect(result).not.toBeNull();
+                    expect(result.id).toEqual(dummyReverseGeocode[0].straatnmid.toString());
+                    expect(result.street).toEqual(dummyReverseGeocode[0].straatnm);
+                    expect(result.postal).toEqual(dummyReverseGeocode[0].postcode);
+                    expect(result.locationType).toEqual("STREET");
+
+                    stub.restore();
+                    done();
+                })
+            })
+
+            it('should return a bicycle route location when no park and street was found + correct properties', (done) => {
+                var stub = sinon.stub(service, 'getPointWithin');
+                stub.onFirstCall().resolves();
+
+                coordinateService.expects("reverseGeocode").resolves();
                 coordinateService.expects("getPointNearby").resolves(dummyBicycleRouteResult);
 
                 const lng = "123";
@@ -373,12 +395,16 @@ describe('antwerpen', () => {
                 })
             });
 
-            it('should return a street route location when no park or bicycle route was found + correct properties', (done) => {
-                coordinateService.expects("getPointWithin").resolves();
+            it('should return a street route location when no park, address or bicycle route was found + correct properties', (done) => {
+                var stub = sinon.stub(service, 'getPointWithin');
+                stub.resolves();
 
-                var stub = sinon.stub(service, 'getPointNearby');
-                stub.onFirstCall().resolves();
-                stub.onSecondCall().resolves(dummyStreetResult);
+                var stub2 = sinon.stub(service, 'reverseGeocode');
+                stub2.resolves();
+
+                var stub3 = sinon.stub(service, 'getPointNearby');
+                stub3.onFirstCall().resolves();
+                stub3.onSecondCall().resolves(dummyStreetResult);
 
                 const lng = "123";
                 const lat = "321";
@@ -391,17 +417,24 @@ describe('antwerpen', () => {
                     expect(result.locationType).toEqual("STREET");
 
                     stub.restore();
+                    stub2.restore();
+                    stub3.restore();
                     done();
                 })
             });
 
             it('should return a street route location from reversegeocode when no park, bicycle route or street was found + correct properties', (done) => {
-                coordinateService.expects("getPointWithin").resolves();
+                var stub = sinon.stub(service, 'getPointWithin');
+                stub.resolves();
 
-                var stub = sinon.stub(service, 'getPointNearby');
-                stub.onFirstCall().resolves();
-                stub.onSecondCall().resolves();
-                coordinateService.expects("reverseGeocode").resolves(dummyReverseGeocode);
+                var stub2 = sinon.stub(service, 'getPointNearby');
+                stub2.onFirstCall().resolves();
+                stub2.onSecondCall().resolves();
+
+                var stub3 = sinon.stub(service, 'reverseGeocode');
+                stub3.onFirstCall().resolves();
+                stub3.onSecondCall().resolves(dummyReverseGeocode);
+
 
                 const lng = "123";
                 const lat = "321";
@@ -414,24 +447,32 @@ describe('antwerpen', () => {
                     expect(result.locationType).toEqual("STREET");
 
                     stub.restore();
+                    stub2.restore();
+                    stub3.restore();
                     done();
                 })
             });
 
-            it('should return no result when no park, bicycle route or street was found', (done) => {
-                coordinateService.expects("getPointWithin").resolves();
+            it('should return no result when nothing was found', (done) => {
+                var stub = sinon.stub(service, 'getPointWithin');
+                stub.resolves();
 
-                var stub = sinon.stub(service, 'getPointNearby');
-                stub.onFirstCall().resolves();
-                stub.onSecondCall().resolves();
-                coordinateService.expects("reverseGeocode").resolves();
+                var stub2 = sinon.stub(service, 'getPointNearby');
+                stub2.resolves();
+
+                var stub3 = sinon.stub(service, 'reverseGeocode');
+                stub3.resolves();
 
                 const lng = "123";
                 const lat = "321";
 
                 service.getLocation(lng, lat).then((result) => {
                     expect(result).toBe();
+
                     stub.restore();
+                    stub2.restore();
+                    stub3.restore();
+
                     done();
                 })
             });
