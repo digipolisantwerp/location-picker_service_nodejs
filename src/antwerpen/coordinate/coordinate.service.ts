@@ -28,9 +28,6 @@ export class CoordinateService {
 
                 return this.getNearestAddress(lat, lng, 25)
                     .then((route25m: LocationItem) => {
-                        console.log('---------------------------------------------');
-                        console.log(route25m);
-                        console.log('---------------------------------------------');
                         if (route25m) {
                             return Promise.resolve(route25m);
                         }
@@ -167,7 +164,6 @@ export class CoordinateService {
     }
 
     private getNearestAddress(lat: number = 0.0, lng: number = 0.0, range = 100): Promise<LocationItem> {
-        console.log(lng, lat);
         return this.reverseGeocode(lng, lat, range)
             .then((response: any) => {
                 if (!response || !response.length) {
