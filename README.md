@@ -37,7 +37,8 @@ app.get('/api/locations', locationSearch);
 var locationSearch = lib.antwerpen.coordinateSearchController({
     crabUrl: process.env.CRAB_URL,
     openSpaceUrl: process.env.OPEN_SPACE_URL,
-    mobilityUrl: process.env.MOBILITY_URL
+    mobilityUrl: process.env.MOBILITY_URL,
+    regionalRoadUrl: process.env.REGIONAL_ROAD_URL
 })
 
 app.get('/api/coordinates', locationSearch)
@@ -63,6 +64,7 @@ SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
 OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
 MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Mobiliteit/MapServer/6/query
+REGIONAL_ROAD_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/basisdata/Mapserver/5
 ```
 
 Run the service:

@@ -22,23 +22,37 @@ export class CoordinateService {
     public getLocation(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         return this.getPark(lat, lng)
             .then((park: LocationItem) => {
-                // if a park is found, return the park
                 if (park) {
                     return Promise.resolve(park);
                 }
 
-                return this.getBicycleRoute(lat, lng)
-                    .then((route: LocationItem) => {
-                        if (route) {
-                            return Promise.resolve(route);
+                return this.getNearestAddress(lat, lng, 25)
+                    .then((route25m: LocationItem) => {
+                        if (route25m) {
+                            return Promise.resolve(route25m);
                         }
-                        return this.getStreet(lat, lng)
-                            .then((street: LocationItem) => {
-                                if (street) {
-                                    return Promise.resolve(street);
+
+                        return this.getBicycleRoute(lat, lng)
+                            .then((bicycleRoute: LocationItem) => {
+                                if (bicycleRoute) {
+                                    return Promise.resolve(bicycleRoute);
                                 }
 
-                                return this.getNearestAddress(lat, lng);
+                                return this.getStreet(lat, lng)
+                                    .then((street: LocationItem) => {
+                                        if (street) {
+                                            return Promise.resolve(street);
+                                        }
+
+                                        return this.getNearestAddress(lat, lng, 100)
+                                        .then((route100m: LocationItem) => {
+                                            if (route100m) {
+                                                return Promise.resolve(route100m);
+                                            }
+
+                                            return this.getRegionalRoad(lat, lng);
+                                        });
+                                    });
                             });
                     });
             });
@@ -83,7 +97,7 @@ export class CoordinateService {
     }
 
     private getBicycleRoute(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
-        const range = 100;
+        const range = 20;
         const layerId = 6;
         return this.getPointNearby(lng, lat, range, this.config.mobilityUrl)
             .then((response: any) => {
@@ -149,8 +163,7 @@ export class CoordinateService {
             });
     }
 
-    private getNearestAddress(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
-        const range = 100;
+    private getNearestAddress(lat: number = 0.0, lng: number = 0.0, range = 100): Promise<LocationItem> {
         return this.reverseGeocode(lng, lat, range)
             .then((response: any) => {
                 if (!response || !response.length) {
@@ -172,6 +185,24 @@ export class CoordinateService {
                             lng: y
                         }
                     }
+                };
+
+                return Promise.resolve(result);
+            });
+    }
+
+    private getRegionalRoad(lat: number = 0.0, lng: number = 0.0, range = 100): Promise<LocationItem> {
+        return this.getPointNearby(lng, lat, range, this.config.regionalRoadUrl)
+            .then((response: any) => {
+                if (!response) {
+                    return Promise.resolve(undefined);
+                }
+
+                const doc = response;
+                const result: LocationItem = {
+                    id: '' + doc.id,
+                    name: doc.description,
+                    locationType: LocationType.RegionalRoad
                 };
 
                 return Promise.resolve(result);

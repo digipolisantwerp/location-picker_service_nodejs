@@ -41,5 +41,6 @@ export enum LocationType {
     Number = "NUMBER",
     Poi = "POI",
     Park = "PARK",
-    BicycleRoute = "BICYCLEROUTE"
+    BicycleRoute = "BICYCLEROUTE",
+    RegionalRoad = "REGIONALROAD"
 }

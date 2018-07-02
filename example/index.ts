@@ -24,7 +24,8 @@ app.get('/api/locations', locationSearch);
 var locationSearch = lib.antwerpen.coordinateSearchController({
     crabUrl: process.env.CRAB_URL,
     openSpaceUrl: process.env.OPEN_SPACE_URL,
-    mobilityUrl: process.env.MOBILITY_URL
+    mobilityUrl: process.env.MOBILITY_URL,
+    regionalRoadUrl: process.env.REGIONAL_ROAD_URL
 })
 
 app.get('/api/coordinates', locationSearch)

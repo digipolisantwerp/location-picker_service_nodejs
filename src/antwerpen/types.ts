@@ -5,6 +5,8 @@ export interface CoordinateServiceConfig {
     mobilityUrl: string;
     /** URL of the CRAB address API */
     crabUrl: string;
+    /** URL of the regional road address API */
+    regionalRoadUrl: string;
 }
 
 export interface LocationServiceConfig {
