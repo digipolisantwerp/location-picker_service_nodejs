@@ -71,7 +71,7 @@ export class CoordinateService {
                 const { rings } = doc.geometry;
                 const result: LocationItem = {
                     id: '' + doc.attributes.OBJECTID,
-                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? (' ' + doc.attributes.HUISNR) : ''),
+                    name: doc.attributes.NAAM,
                     street: doc.attributes.STRAAT,
                     number: doc.attributes.HUISNR,
                     postal: doc.attributes.POSTCODE,
@@ -222,7 +222,7 @@ export class CoordinateService {
     }
 
     private reverseGeocode(lat: number = 0.0, lng: number = 0.0, range: number = 20) {
-        const url = "https://reversedgeocode-p.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
+        const url = "https://reversedgeocode-a.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
             "?sr=4326" +
             "&count=20" +
             "&buffer=" + range +
