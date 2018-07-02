@@ -75,7 +75,7 @@ Run the service:
 ```
 
 Test by browsing to [localhost:9999/api/locations?search=general armstrongweg 1](http://localhost:9999/api/locations?search=generaal%20armstrongweg%201).
-Test by browsing to [localhost:9999/api/coordinates?lat=51.196541&lng=4.421896](http://localhost:9999/api/coordinates?lng=51.196541&lat=4.421896).
+Test by browsing to [localhost:9999/api/coordinates?lat=51.196541&lng=4.421896](http://localhost:9999/api/coordinates?lat=51.196541&lng=4.421896).
 
 The UI demo app expects the service to run on port 9999.
 
