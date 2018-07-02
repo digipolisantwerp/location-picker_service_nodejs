@@ -51,7 +51,42 @@
           }
         }
       }
+  },
+  "/coordinates": {
+    "get": {
+      "summary": "Return the matching location for a given coordinate",
+      "description": "A cascade of api calls is triggered to pinpoint the correct location.",
+      "operationId": "getLocation",
+      "produces": [
+        "application/json"
+      ],
+      "parameters": [
+        {
+          "name": "lat",
+          "in": "query",
+          "description": "latitude of the location",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "lng",
+          "in": "query",
+          "description": "longitutde of the location",
+          "default": "street,number,poi",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "successful operation",
+          "schema": {
+            "$ref": "#/definitions/Locations"
+          }
+        }
+      }
     }
+  }
   },
   "definitions": {
     "Location": {

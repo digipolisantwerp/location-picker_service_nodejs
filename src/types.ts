@@ -7,14 +7,18 @@ export interface LocationItem {
     street?: string;
     /** the street address number (not a number, may contain letters) */
     number?: string;
+    /** the street postal (not a number, may contain letters) */
+    postal?: string;
     /** the city district this street is in (if known) */
     district?: string;
     /** the type of location item this is, number means street address */
-    locationType: "street" | "number" | "poi";
+    locationType: LocationType;
     /** the layer that the result came from (in the underlying data repository) */
     layer?: string;
     /** the coordinates of this location */
     coordinates?: Coordinates;
+    /** the polygon of this location */
+    polygons?: LatLngCoordinate[][];
 }
 
 export interface Coordinates {
@@ -30,4 +34,13 @@ export interface LambertCoordinate {
 export interface LatLngCoordinate {
     lat: number;
     lng: number;
+}
+
+export enum LocationType {
+    Street = "STREET",
+    Number = "NUMBER",
+    Poi = "POI",
+    Park = "PARK",
+    BicycleRoute = "BICYCLEROUTE",
+    RegionalRoad = "REGIONALROAD"
 }

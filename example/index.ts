@@ -13,11 +13,22 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.get('/api/locations', lib.antwerpen.createController({
+var locationSearch = lib.antwerpen.locationSearchController({
     solrGisAuthorization: process.env.SOLR_GIS_AUTHORIZATION,
     solrGisUrl: process.env.SOLR_GIS_URL,
     crabUrl: process.env.CRAB_URL
-}));
+})
+
+app.get('/api/locations', locationSearch);
+
+var coodinateSearch = lib.antwerpen.coordinateSearchController({
+    crabUrl: process.env.CRAB_URL,
+    openSpaceUrl: process.env.OPEN_SPACE_URL,
+    mobilityUrl: process.env.MOBILITY_URL,
+    regionalRoadUrl: process.env.REGIONAL_ROAD_URL
+})
+
+app.get('/api/coordinates', coodinateSearch)
 
 const port = process.env.PORT || 9999;
 app.listen(port, () =>
