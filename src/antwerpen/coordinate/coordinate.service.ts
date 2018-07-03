@@ -1,7 +1,4 @@
 import requestPromise = require("request-promise");
-import filterSqlVar from '../../helpers/filterSqlVar';
-import { handleResponse, handleResponseFn } from '../../helpers/handleResponse';
-import lambertToLatLng from '../../helpers/lambertToLatLng';
 import { LatLngCoordinate, LocationItem, LocationType } from '../../types';
 import { CoordinateServiceConfig } from '../types';
 import * as Promise from 'bluebird';
@@ -13,41 +10,43 @@ export class CoordinateService {
         this.config = config;
     }
 
-    // CASCADE to find place
+    // CASCADE to find a location
     // 1) check if the location is a park
-    // 2) check if the location is a bicycle route
-    // 3) check if the location is a street
-    // 4) use reverse geocode as a last resort to match it with a location
+    // 2) check if the location is an address within 25m
+    // 3) check if the location is a bicycle route
+    // 4) check if the location is a street
+    // 5) check if the location is an address within 100m
+    // 6) check if the location is a regional road
 
     public getLocation(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         return this.getPark(lat, lng)
             .then((park: LocationItem) => {
                 if (park) {
-                    return Promise.resolve(park);
+                    return park;
                 }
 
                 return this.getNearestAddress(lat, lng, 25)
                     .then((route25m: LocationItem) => {
                         if (route25m) {
-                            return Promise.resolve(route25m);
+                            return route25m;
                         }
 
                         return this.getBicycleRoute(lat, lng)
                             .then((bicycleRoute: LocationItem) => {
                                 if (bicycleRoute) {
-                                    return Promise.resolve(bicycleRoute);
+                                    return bicycleRoute;
                                 }
 
                                 return this.getStreet(lat, lng)
                                     .then((street: LocationItem) => {
                                         if (street) {
-                                            return Promise.resolve(street);
+                                            return street;
                                         }
 
                                         return this.getNearestAddress(lat, lng, 100)
                                         .then((route100m: LocationItem) => {
                                             if (route100m) {
-                                                return Promise.resolve(route100m);
+                                                return route100m;
                                             }
 
                                             return this.getRegionalRoad(lat, lng);
@@ -78,7 +77,7 @@ export class CoordinateService {
                     locationType: LocationType.Park,
                     polygons: rings ? rings.map((ring: any[]) => {
                         return ring.map((x: any[]) => {
-                            if (x.length < 1) {
+                            if (x.length < 2) {
                                 return undefined;
                             }
 
@@ -116,7 +115,7 @@ export class CoordinateService {
                     locationType: LocationType.BicycleRoute,
                     polygons: paths ? paths.map((ring: any[]) => {
                         return ring.map((x: any[]) => {
-                            if (x.length < 1) {
+                            if (x.length < 2) {
                                 return undefined;
                             }
 

@@ -37,10 +37,10 @@ export interface LatLngCoordinate {
 }
 
 export enum LocationType {
-    Street = "STREET",
-    Number = "NUMBER",
-    Poi = "POI",
-    Park = "PARK",
-    BicycleRoute = "BICYCLEROUTE",
-    RegionalRoad = "REGIONALROAD"
+    Street = "street",
+    Number = "number",
+    Poi = "poi",
+    Park = "park",
+    BicycleRoute = "bicycleroute",
+    RegionalRoad = "regionalroad"
 }

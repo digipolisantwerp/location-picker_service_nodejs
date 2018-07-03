@@ -25,7 +25,7 @@ Express example:
 ```js
 const express = require('express');
 const app = express()
-const pickerHelper = require('@acpaas-ui-widgets/nodejs-location-picker');
+const lib = require('@acpaas-ui-widgets/nodejs-location-picker');
 var locationSearch = lib.antwerpen.locationSearchController({
     solrGisAuthorization: process.env.SOLR_GIS_AUTHORIZATION,
     solrGisUrl: process.env.SOLR_GIS_URL,
@@ -34,14 +34,14 @@ var locationSearch = lib.antwerpen.locationSearchController({
 
 app.get('/api/locations', locationSearch);
 
-var locationSearch = lib.antwerpen.coordinateSearchController({
+var coordinateSearch = lib.antwerpen.coordinateSearchController({
     crabUrl: process.env.CRAB_URL,
     openSpaceUrl: process.env.OPEN_SPACE_URL,
     mobilityUrl: process.env.MOBILITY_URL,
     regionalRoadUrl: process.env.REGIONAL_ROAD_URL
 })
 
-app.get('/api/coordinates', locationSearch)
+app.get('/api/coordinates', coordinateSearch)
 app.listen(9999);
 ```
 
@@ -93,7 +93,7 @@ The service implements the following second protocol:
 
 - GET /path/to/endpoint?lat=...&lng=...
 - lat = latitude of the location
-- lng = longitutde of the location
+- lng = longitude of the location
 - result = JSON-encoded array of [LocationItem](src/types.ts) objects
 
 An [example swagger description](swagger-example.json) is included.

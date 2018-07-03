@@ -2,7 +2,7 @@ import request = require('request');
 import filterSqlVar from '../../helpers/filterSqlVar';
 import { handleResponse, handleResponseFn } from '../../helpers/handleResponse';
 import lambertToLatLng from '../../helpers/lambertToLatLng';
-import { LatLngCoordinate, LocationItem, LocationType, Coordinates } from '../../types';
+import { LocationItem, LocationType, Coordinates } from '../../types';
 import { LocationServiceConfig } from '../types';
 
 const getStreetAndNr = (search: string = '') => {
