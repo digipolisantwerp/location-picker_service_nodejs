@@ -1,10 +1,10 @@
 import requestPromise = require("request-promise");
-import { LatLngCoordinate, LocationItem, LocationType } from '../../types';
+import { LocationItem, LocationType } from '../../types';
 import { CoordinateServiceConfig } from '../types';
 import * as Promise from 'bluebird';
 
 export class CoordinateService {
-    private config: CoordinateServiceConfig
+    private config: CoordinateServiceConfig;
 
     constructor(config: CoordinateServiceConfig) {
         this.config = config;
@@ -208,7 +208,10 @@ export class CoordinateService {
             });
     }
 
-    private getPointWithin(lat: number = 0.0, lng: number = 0.0, tolerance: number = 0, layerIds: number = 0, layerUrl: string) {
+    private getPointWithin(
+        lat: number = 0.0, lng: number = 0.0, tolerance: number = 0,
+        layerIds: number = 0, layerUrl: string
+    ) {
         const url = "https://querybylocation.antwerpen.be/querybylocation/pointwhitin" +
             "?url=" + layerUrl +
             "&sr=4326" +

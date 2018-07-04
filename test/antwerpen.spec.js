@@ -1,6 +1,5 @@
 const proxyquire = require('proxyquire');
 const sinon = require("sinon");
-const bluebird = require("bluebird");
 
 const {CoordinateService} = require('../dist/antwerpen/coordinate/coordinate.service');
 
@@ -322,6 +321,7 @@ describe('antwerpen', () => {
             const config = {
                 queryUrl: queryTestUrl
             };
+            // @ts-ignore
             const service = new CoordinateService(config);
 
             beforeEach(() => {
@@ -343,7 +343,7 @@ describe('antwerpen', () => {
                     expect(result.id).toEqual(dummyParkResult.results[0].attributes.OBJECTID);
                     expect(result.street).toEqual(dummyParkResult.results[0].attributes.STRAAT);
                     expect(result.postal).toEqual(dummyParkResult.results[0].attributes.POSTCODE);
-                    expect(result.locationType).toEqual("PARK");
+                    expect(result.locationType).toEqual("park");
                     expect(result.polygons).not.toBeNull();
                     expect(result.polygons.length).toEqual(dummyParkResult.results[0].geometry.rings.length);
                     expect(result.polygons[0].length).toEqual(dummyParkResult.results[0].geometry.rings[0].length);
@@ -366,7 +366,7 @@ describe('antwerpen', () => {
                     expect(result.id).toEqual(dummyReverseGeocode[0].straatnmid.toString());
                     expect(result.street).toEqual(dummyReverseGeocode[0].straatnm);
                     expect(result.postal).toEqual(dummyReverseGeocode[0].postcode);
-                    expect(result.locationType).toEqual("STREET");
+                    expect(result.locationType).toEqual("street");
 
                     stub.restore();
                     done();
@@ -388,7 +388,7 @@ describe('antwerpen', () => {
                     expect(result.id).toEqual(dummyBicycleRouteResult.results[0].attributes.ObjectID.toString());
                     expect(result.street).toEqual(dummyBicycleRouteResult.results[0].attributes.STRAAT);
                     expect(result.postal).toEqual(dummyBicycleRouteResult.results[0].attributes.postcode_links);
-                    expect(result.locationType).toEqual("BICYCLEROUTE");
+                    expect(result.locationType).toEqual("bicycleroute");
 
                     stub.restore();
                     done();
@@ -414,7 +414,7 @@ describe('antwerpen', () => {
                     expect(result.id).toEqual(dummyStreetResult.features[0].attributes.OBJECTID.toString());
                     expect(result.street).toEqual(dummyStreetResult.features[0].attributes.STRAATNM);
                     expect(result.postal).toEqual(dummyStreetResult.features[0].attributes.POSTCODE);
-                    expect(result.locationType).toEqual("STREET");
+                    expect(result.locationType).toEqual("street");
 
                     stub.restore();
                     stub2.restore();
@@ -444,7 +444,7 @@ describe('antwerpen', () => {
                     expect(result.id).toEqual(dummyReverseGeocode[0].straatnmid.toString());
                     expect(result.street).toEqual(dummyReverseGeocode[0].straatnm);
                     expect(result.postal).toEqual(dummyReverseGeocode[0].postcode);
-                    expect(result.locationType).toEqual("STREET");
+                    expect(result.locationType).toEqual("street");
 
                     stub.restore();
                     stub2.restore();
@@ -467,7 +467,7 @@ describe('antwerpen', () => {
                 const lat = "321";
 
                 service.getLocation(lng, lat).then((result) => {
-                    expect(result).toBe();
+                    expect(result).toBeUndefined();
 
                     stub.restore();
                     stub2.restore();

@@ -151,4 +151,4 @@ export = function createLocationService(config: LocationServiceConfig):
             }
         });
     };
-}
+};
