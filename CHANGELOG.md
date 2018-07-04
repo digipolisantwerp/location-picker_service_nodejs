@@ -13,6 +13,12 @@ All notable changes to this project will be documented in this file.
 "### Security" in case of vulnerabilities.
 -->
 
+## [2.1.0] - 2018-07-04
+
+### Added
+
+- added coordinates service to support planned leaflet picker widget [#4](https://github.com/digipolisantwerp/location-picker_service_nodejs/issues/4)
+
 ## [2.0.0] - 2018-06-25
 
 ### Changed
@@ -38,7 +44,8 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.0.2...v1.1.0
 [1.0.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v0.0.1...v1.0.1
