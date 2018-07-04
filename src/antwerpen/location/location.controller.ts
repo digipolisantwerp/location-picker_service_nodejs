@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { LocationItem } from '../types';
-import createService = require('./service');
-import { ServiceConfig } from './types';
+import { LocationItem } from '../../types';
+import createLocationService = require ('./location.service');
+import { LocationServiceConfig } from '../types';
 
-const createController = (config: ServiceConfig) => {
-    const service = createService(config);
+const locationSearchController = (config: LocationServiceConfig) => {
+    const service = createLocationService(config);
     return (req: Request, res: Response, next: NextFunction) => {
         service(req.query.search, req.query.types).then((result: LocationItem[]) => {
             res.json(result);
@@ -15,4 +15,4 @@ const createController = (config: ServiceConfig) => {
     };
 };
 
-export = createController;
+export = locationSearchController;
