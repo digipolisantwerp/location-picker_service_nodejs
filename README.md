@@ -1,6 +1,6 @@
 # Location Picker Smart Widget BFF (Node)
 
-This is a Node.js backend service library to create a BFF service for the Location Picker Smart Widget. The widget provides a picker field to choose a street, street address or point of interest from GIS sources. This service is matched by a [corresponding UI](https://github.com/digipolisantwerp/location-picker_widget_angular).
+This is a Node.js backend service library to create a BFF service for the Location Picker Smart Widget. The Location Picker widget provides a picker field to choose a street, street address or point of interest from GIS sources. This service is matched by a [corresponding UI](https://github.com/digipolisantwerp/location-picker_widget_angular).
 
 There is a **demo service**, see below for instructions on running it.
 
@@ -24,24 +24,26 @@ Express example:
 
 ```js
 const express = require('express');
-const app = express()
+const app = express();
 const lib = require('@acpaas-ui-widgets/nodejs-location-picker');
-var locationSearch = lib.antwerpen.locationSearchController({
+
+// for the location picker widget:
+const locationSearch = lib.antwerpen.locationSearchController({
     solrGisAuthorization: process.env.SOLR_GIS_AUTHORIZATION,
     solrGisUrl: process.env.SOLR_GIS_URL,
     crabUrl: process.env.CRAB_URL
-})
-
+});
 app.get('/api/locations', locationSearch);
 
-var coordinateSearch = lib.antwerpen.coordinateSearchController({
+// coordinates api for planned leaflet extension (not currently needed):
+const coordinateSearch = lib.antwerpen.coordinateSearchController({
     crabUrl: process.env.CRAB_URL,
     openSpaceUrl: process.env.OPEN_SPACE_URL,
     mobilityUrl: process.env.MOBILITY_URL,
     regionalRoadUrl: process.env.REGIONAL_ROAD_URL
-})
+});
+app.get('/api/coordinates', coordinateSearch);
 
-app.get('/api/coordinates', coordinateSearch)
 app.listen(9999);
 ```
 
@@ -51,7 +53,7 @@ The library provides the following interface:
 
 - antwerpen
   - *locationSearch(config)*: create an express controller that handles the connection to the data sources for locations in Antwerpen.
-  - *coordinateSearch(config)*: create an express controller that handles the connection to the data sources for coordinates in Antwerpen.
+  - *coordinateSearch(config)*: create an express controller that handles the connection to the data sources for coordinates in Antwerpen. (Not currently needed for Location Picker widget.)
 
 ## Run the demo app
 
@@ -62,6 +64,7 @@ PORT=9999
 SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
 SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
+# only for coordinates service:
 OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
 MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Mobiliteit/MapServer/6/query
 REGIONAL_ROAD_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/basisdata/Mapserver/5
@@ -74,8 +77,9 @@ Run the service:
 > npm start
 ```
 
-Test by browsing to [localhost:9999/api/locations?search=general armstrongweg 1](http://localhost:9999/api/locations?search=generaal%20armstrongweg%201).
-Test by browsing to [localhost:9999/api/coordinates?lat=51.196541&lng=4.421896](http://localhost:9999/api/coordinates?lat=51.196541&lng=4.421896).
+Test locations service by browsing to [localhost:9999/api/locations?search=general armstrongweg 1](http://localhost:9999/api/locations?search=generaal%20armstrongweg%201).
+
+Test coordinates service by browsing to [localhost:9999/api/coordinates?lat=51.196541&lng=4.421896](http://localhost:9999/api/coordinates?lat=51.196541&lng=4.421896).
 
 The UI demo app expects the service to run on port 9999.
 
