@@ -6,12 +6,13 @@ import { LocationItem, LocationType, Coordinates } from '../../types';
 import { LocationServiceConfig } from '../types';
 
 const getStreetAndNr = (search: string = '') => {
-    const parts = search.split(' ');
     const result = {
         street: '',
         num: '',
     };
 
+    // split into street name and number
+    const parts = search.split(' ');
     parts.forEach((part, index) => {
         const matches = /^[0-9]/.exec(part);
         if ((index > 0) && matches) {
@@ -25,6 +26,9 @@ const getStreetAndNr = (search: string = '') => {
         }
         result.street += part;
     });
+
+    // strip district from street name (e.g. " (Deurne)")
+    result.street = result.street.trim().replace(/\s+\([a-z\s]+\)$/gi, "");
 
     return result;
 };
@@ -139,10 +143,12 @@ export = function createLocationService(config: LocationServiceConfig):
             try {
                 const { street, num } = getStreetAndNr(search);
                 const typesArray = types.split(',');
+                // look for a specific address (with number)
                 if (!!num && typesArray.includes('number')) {
                     getAddress(street, num, callback);
+                // look for a street or point of interest (without number)
                 } else if (typesArray.includes('poi') || typesArray.includes('street')) {
-                    getLocationsBySearch(search, typesArray, callback);
+                    getLocationsBySearch(street, typesArray, callback);
                 } else {
                     resolve([]);
                 }
