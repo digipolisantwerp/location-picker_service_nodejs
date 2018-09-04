@@ -74,6 +74,7 @@ export class CoordinateService {
                     street: doc.attributes.STRAAT,
                     number: doc.attributes.HUISNR,
                     postal: doc.attributes.POSTCODE,
+                    district: doc.attributes.DISTRICT,
                     locationType: LocationType.Park,
                     polygons: rings ? rings.map((ring: any[]) => {
                         return ring.map((x: any[]) => {
@@ -149,6 +150,7 @@ export class CoordinateService {
                     street: doc.attributes.STRAATNM,
                     number: doc.attributes.HUISNR,
                     postal: doc.attributes.POSTCODE,
+                    district: doc.attributes.GEMEENTE,
                     locationType: LocationType.Street,
                     coordinates: {
                         latLng: {
