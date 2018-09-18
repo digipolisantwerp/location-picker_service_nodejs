@@ -13,6 +13,24 @@ All notable changes to this project will be documented in this file.
 "### Security" in case of vulnerabilities.
 -->
 
+## [2.1.2] - 2018-09-04
+
+### Fixed
+
+- Added district field to coordinates response ([PR #7](https://github.com/digipolisantwerp/location-picker_service_nodejs/pull/7))
+
+## [2.1.1] - 2018-08-23
+
+### Fixed
+
+- Stripped district from queries [#5](https://github.com/digipolisantwerp/location-picker_service_nodejs/issues/5) to solve issue [#3](https://github.com/digipolisantwerp/location-picker_widget_angular/issues/3) reported in UI.
+
+## [2.1.0] - 2018-07-04
+
+### Added
+
+- added coordinates service to support planned leaflet picker widget [#4](https://github.com/digipolisantwerp/location-picker_service_nodejs/issues/4)
+
 ## [2.0.0] - 2018-06-25
 
 ### Changed
@@ -38,7 +56,10 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.2...HEAD
+[2.1.2]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.1...v2.1.2
+[2.1.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.0...v2.1.1
+[2.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.0.2...v1.1.0
 [1.0.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v0.0.1...v1.0.1
