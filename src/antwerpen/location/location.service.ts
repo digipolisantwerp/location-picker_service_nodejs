@@ -92,6 +92,7 @@ export = function createLocationService(config: LocationServiceConfig):
         const url = config.solrGisUrl +
             '?wt=json&rows=5&solrtype=gislocaties&dismax=true&bq=exactName:DISTRICT^20000.0' +
             '&bq=layer:straatnaam^20000.0' + `&q=(${encodeURIComponent(search)})`;
+
         const responseHandler = handleResponse('response.docs', (doc: any): LocationItem => {
             let coordinates: Coordinates;
             if (doc && (doc.x || doc.y)) {
@@ -100,6 +101,7 @@ export = function createLocationService(config: LocationServiceConfig):
                     latLng: lambertToLatLng(doc.x, doc.y)
                 };
             }
+            
             const isStreet = doc.layer === 'straatnaam';
             const result: LocationItem = {
                 id: doc.id,
