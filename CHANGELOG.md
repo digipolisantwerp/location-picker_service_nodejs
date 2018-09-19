@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
 "### Fixed" for any bug fixes.
 "### Security" in case of vulnerabilities.
 -->
+## [2.1.3] - 2018-09-19
+
+### Fixed
+
+- Fix build problems in TS < 2.9 ([PR #8](https://github.com/digipolisantwerp/location-picker_service_nodejs/pull/8))
 
 ## [2.1.2] - 2018-09-04
 
@@ -56,7 +61,8 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.2...HEAD
+[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.3...HEAD
+[2.1.3]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.0.0...v2.1.0
