@@ -5,6 +5,8 @@ export interface LocationItem {
     name: string;
     /** the street name, if any */
     street?: string;
+    /** the street id, if any */
+    streetnameid?: string;
     /** the street address number (not a number, may contain letters) */
     number?: string;
     /** the street postal (not a number, may contain letters) */

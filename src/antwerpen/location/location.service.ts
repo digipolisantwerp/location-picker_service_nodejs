@@ -10,7 +10,6 @@ const getStreetAndNr = (search: string = '') => {
         street: '',
         num: '',
     };
-
     // split into street name and number
     const parts = search.split(' ');
     parts.forEach((part, index) => {
@@ -29,7 +28,10 @@ const getStreetAndNr = (search: string = '') => {
 
     // strip district from street name (e.g. " (Deurne)")
     result.street = result.street.trim().replace(/\s+\([a-z\s]+\)$/gi, "");
-
+    if(/\d/.test(result.street)){
+        result.num = result.street.match(/\d+/)[0];
+        result.street = result.street.replace(/[0-9]/g, '');
+    }
     return result;
 };
 
@@ -69,9 +71,11 @@ export = function createLocationService(config: LocationServiceConfig):
             const latLng = lambertToLatLng(x, y);
             return {
                 id: '' + doc.attributes.ID,
-                name: doc.attributes.STRAATNM + ' ' + doc.attributes.HUISNR,
+                name: doc.attributes.STRAATNAAM + ' ' + doc.attributes.HUISNR + ', ' + doc.attributes.POSTCODE + ' ' + doc.attributes.DISTRICT,
                 street: doc.attributes.STRAATNM,
                 number: doc.attributes.HUISNR,
+                postal: doc.attributes.POSTCODE,
+                district: doc.attributes.DISTRICT,
                 locationType: LocationType.Number,
                 layer: 'CRAB',
                 coordinates: {
@@ -116,14 +120,18 @@ export = function createLocationService(config: LocationServiceConfig):
             };
             if (isStreet) {
                 result.street = doc.name;
+                result.streetnameid = doc.streetNameId;
             }
             if (doc.districts && doc.districts.length) {
                 const district = doc.districts[0];
                 if (typeof district === "string") {
                     result.district = district;
-                    result.name += " (" + district + ")";
+                    result.name += " (" + district + ")lmao";
                 }
+                result.postal = doc.POSTCODE;
+                result.district = doc.DISTRICT;
             }
+            console.log(doc);
             return result;
         }, callback);
 
