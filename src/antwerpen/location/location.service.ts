@@ -131,7 +131,6 @@ export = function createLocationService(config: LocationServiceConfig):
                 result.postal = doc.POSTCODE;
                 result.district = doc.DISTRICT;
             }
-            console.log(doc);
             return result;
         }, callback);
 
