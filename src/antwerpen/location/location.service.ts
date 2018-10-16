@@ -126,7 +126,7 @@ export = function createLocationService(config: LocationServiceConfig):
                 const district = doc.districts[0];
                 if (typeof district === "string") {
                     result.district = district;
-                    result.name += " (" + district + ")lmao";
+                    result.name += " (" + district + ")";
                 }
                 result.postal = doc.POSTCODE;
                 result.district = doc.DISTRICT;
