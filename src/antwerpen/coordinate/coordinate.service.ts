@@ -55,7 +55,6 @@ export class CoordinateService {
     private getPark(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const tolerance = 0;
         const layerId = 21;
-        return Promise.resolve(undefined);
 
         return this.getPointWithin(lng, lat, tolerance, layerId, this.config.openSpaceUrl).then((response: any) => {
             if (!response || !response.results || !response.results.length) {
