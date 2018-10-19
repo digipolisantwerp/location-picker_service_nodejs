@@ -18,7 +18,7 @@ export class CoordinateService {
     // 5) check if the location is an address within 100m
     // 6) check if the location is a regional road
 
-    public getLocation(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
+    public getLocation(lat: number = 0.0, lng: number = 0.0): Promise<void | LocationItem> {
         return this.getPark(lat, lng).then((park: LocationItem) => {
             if (park) {
                 return park;
@@ -105,7 +105,7 @@ export class CoordinateService {
                 return Promise.resolve(undefined);
             }
 
-            const doc = response.results[0];
+            const doc = response.features[0];
             const { paths } = doc.geometry;
             const result: LocationItem = {
                 id: "" + doc.attributes.ObjectID,
