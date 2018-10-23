@@ -13,7 +13,7 @@ const getStreetAndNr = (search: string = '') => {
     // split into street name and number
     const parts = search.split(' ');
     parts.forEach((part, index) => {
-        const matches = /^[0-9]/.exec(part);
+        const matches = /[0-9]$/.exec(part);
         if ((index > 0) && matches) {
             if (!!result.num || matches.index === 0) {
                 result.num += part + '';
@@ -23,15 +23,25 @@ const getStreetAndNr = (search: string = '') => {
         if (result.street) {
             result.street += ' ';
         }
-        result.street += part;
+        //checks if last part contains number at the end
+        if(/\d$/.test(part) && (index + 1) == parts.length){
+            result.num = part.replace(/^[0-9]\-[a-z]+/g, '');
+            result.street += part.replace(/\d*$/, '');
+        }else{
+            result.street += part;
+        }
     });
 
     // strip district from street name (e.g. " (Deurne)")
     result.street = result.street.trim().replace(/\s+\([a-z\s]+\)$/gi, "");
-    if(/\d/.test(result.street)){
-        result.num = result.street.match(/\d+/)[0];
-        result.street = result.street.replace(/[0-9]/g, '');
+
+    // check if street contains numbers at the end and removes those numbers
+    if(/[a-z]\d*$/.test(result.street)){
+        result.street = result.street.replace(/[0-9]*$/g, '');
     }
+
+    // makes sure the number field doesn't contain the street and removes spaces
+    result.num = search.replace(result.street, '').replace(/\s/g, '');
     return result;
 };
 
@@ -120,7 +130,7 @@ export = function createLocationService(config: LocationServiceConfig):
             };
             if (isStreet) {
                 result.street = doc.name;
-                result.streetnameid = doc.streetNameId;
+                result.streetid = doc.streetNameId;
             }
             if (doc.districts && doc.districts.length) {
                 const district = doc.districts[0];
