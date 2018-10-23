@@ -113,25 +113,27 @@ export = function createLocationService(
                     };
                 }
 
-                let polygons = Array<Array<LatLngCoordinate>>();
+                let polygons = Array<LatLngCoordinate[]>();
                 if (doc && doc.geometry) {
                     try {
-                        var geometry = JSON.parse(doc.geometry);
+                        const geometry = JSON.parse(doc.geometry);
                         if (geometry[0].length > 0) {
                             const geometry2d = doc.geometry[0];
                             polygons = geometry.map((p: any[]) => {
-                                return p.map((coordinates: any[]) => {
-                                    if (coordinates.length < 2) {
+                                return p.map((xy: any[]) => {
+                                    if (xy.length < 2) {
                                         return undefined;
                                     }
 
-                                    const x = coordinates[0];
-                                    const y = coordinates[1];
+                                    const x = xy[0];
+                                    const y = xy[1];
                                     return lambertToLatLng(x, y);
                                 });
                             });
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }
 
                 const isStreet = doc.layer === "straatnaam";
@@ -141,7 +143,7 @@ export = function createLocationService(
                     layer: doc.layer,
                     locationType: isStreet ? LocationType.Street : LocationType.Poi,
                     coordinates,
-                    polygons: polygons,
+                    polygons,
                 };
                 if (isStreet) {
                     result.street = doc.name;
