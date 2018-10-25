@@ -45,8 +45,8 @@ const getStreetAndNr = (search: string = '') => {
     result.num = search.replace(result.street, '').replace(/\s/g, '');
 
     // strip district from num field in case it's there (For some reason it gets into the num field in some cases)
-    result.num = result.num.trim().replace(/\s*/gi, '').replace(/\(*/g, '').replace(/[a-z]*/gi, '').replace(/\)*/g, '').replace(/\,*/g,'');
-
+    result.num = result.num.trim().replace(/^\([a-z\s\,]*\)/gi, "");
+    
     console.log(result);
     return result;
 };
