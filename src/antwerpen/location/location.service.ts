@@ -33,7 +33,8 @@ const getStreetAndNr = (search: string = '') => {
     });
 
     // strip district from street name (e.g. " (Deurne)")
-    result.street = result.street.trim().replace(/\s+\([a-z\s]+\)$/gi, "");
+    result.street = result.street.trim().replace(/\s+\([a-z\s\,]+\)$/gi, "");
+    // result.street = result.street.trim().replace(/\s*/gi, '').replace(/\(*/g, '').replace(/[a-z]*/gi, '').replace(/\)*/g, '').replace(/\,*/g,'');
 
     // check if street contains numbers at the end and removes those numbers
     if(/[a-z]\d*$/.test(result.street)){
@@ -42,6 +43,11 @@ const getStreetAndNr = (search: string = '') => {
 
     // makes sure the number field doesn't contain the street and removes spaces
     result.num = search.replace(result.street, '').replace(/\s/g, '');
+
+    // strip district from num field in case it's there (For some reason it gets into the num field in some cases)
+    result.num = result.num.trim().replace(/\s*/gi, '').replace(/\(*/g, '').replace(/[a-z]*/gi, '').replace(/\)*/g, '').replace(/\,*/g,'');
+
+    console.log(result);
     return result;
 };
 
