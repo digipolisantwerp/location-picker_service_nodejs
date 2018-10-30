@@ -13,6 +13,13 @@ All notable changes to this project will be documented in this file.
 "### Security" in case of vulnerabilities.
 -->
 
+## [2.3.0] - 2018-10-30
+
+- Include streetid in response
+- Improve address formatting. E.g. show `Kattenberg 3, 2140 Borgerhout` instead of `Kattenberg_BO 3`
+- Support street and number input without a separating space
+- Include postal code and district in address response
+
 ## [2.2.1] - 2018-10-23
 
 - Fix coordinates service unable to find bicycle routes
@@ -70,7 +77,8 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.2.1...HEAD
+[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.3...v2.2.0
 [2.1.3]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.2...v2.1.3
