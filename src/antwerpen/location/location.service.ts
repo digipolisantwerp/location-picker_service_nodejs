@@ -10,12 +10,11 @@ const getStreetAndNr = (search: string = "") => {
         street: "",
         num: "",
     };
-
     // split into street name and number
     const parts = search.split(" ");
     parts.forEach((part, index) => {
-        const matches = /^[0-9]/.exec(part);
-        if (index > 0 && matches) {
+        const matches = /[0-9]$/.exec(part);
+        if ((index > 0) && matches) {
             if (!!result.num || matches.index === 0) {
                 result.num += part + "";
                 return;
@@ -24,12 +23,28 @@ const getStreetAndNr = (search: string = "") => {
         if (result.street) {
             result.street += " ";
         }
-        result.street += part;
+        // checks if last part contains number at the end
+        if (/\d$/.test(part) && ((index + 1) === parts.length)) {
+            result.num = part.replace(/^[0-9]\-[a-z]+/g, '');
+            result.street += part.replace(/\d*$/, '');
+        } else {
+            result.street += part;
+        }
     });
 
     // strip district from street name (e.g. " (Deurne)")
-    result.street = result.street.trim().replace(/\s+\([a-z\s]+\)$/gi, "");
+    result.street = result.street.trim().replace(/\s+\([a-z\s\,]+\)$/gi, "");
 
+    // check if street contains numbers at the end and removes those numbers
+    if (/[a-z]\d*$/.test(result.street)) {
+        result.street = result.street.replace(/[0-9]*$/g, '');
+    }
+
+    // makes sure the number field doesn't contain the street and removes spaces
+    result.num = search.replace(result.street, '').replace(/\s/g, '');
+
+    // strip district from num field in case it's there (For some reason it gets into the num field in some cases)
+    result.num = result.num.trim().replace(/^\([a-z\s\,]*\)/gi, "");
     return result;
 };
 
@@ -65,27 +80,26 @@ export = function createLocationService(
             "?f=json&orderByFields=HUISNR&where=GEMEENTE='Antwerpen' and " +
             `STRAATNM LIKE '${street}%' and HUISNR='${num}' ` +
             "and APPTNR='' and BUSNR=''&outFields=*";
-        const responseHandler = handleResponse(
-            "features",
-            (doc: any): LocationItem => {
-                const { x, y } = doc.geometry;
-                const latLng = lambertToLatLng(x, y);
-                return {
-                    id: "" + doc.attributes.ID,
-                    name: doc.attributes.STRAATNM + " " + doc.attributes.HUISNR,
-                    street: doc.attributes.STRAATNM,
-                    number: doc.attributes.HUISNR,
-                    locationType: LocationType.Number,
-                    layer: "CRAB",
-                    coordinates: {
-                        latLng,
-                        lambert: { x, y },
-                    },
-                };
-            },
-            callback,
-        );
-
+        const responseHandler = handleResponse('features', (doc: any): LocationItem => {
+            const { x, y } = doc.geometry;
+            const latLng = lambertToLatLng(x, y);
+            let nameFormat = doc.attributes.STRAATNAAM + ' ' + doc.attributes.HUISNR;
+            nameFormat +=  ', ' + doc.attributes.POSTCODE + ' ' + doc.attributes.DISTRICT;
+            return {
+                id: '' + doc.attributes.ID,
+                name: nameFormat,
+                street: doc.attributes.STRAATNM,
+                number: doc.attributes.HUISNR,
+                postal: doc.attributes.POSTCODE,
+                district: doc.attributes.DISTRICT,
+                locationType: LocationType.Number,
+                layer: 'CRAB',
+                coordinates: {
+                    latLng,
+                    lambert: { x, y }
+                }
+            };
+        }, callback);
         request(getRequestOptions(url), responseHandler);
     };
 
@@ -146,19 +160,20 @@ export = function createLocationService(
                     polygons,
                 };
                 if (isStreet) {
-                    result.street = doc.name;
-                }
+                result.street = doc.name;
+                result.streetid = doc.streetNameId;
+            }
                 if (doc.districts && doc.districts.length) {
-                    const district = doc.districts[0];
-                    if (typeof district === "string") {
-                        result.district = district;
-                        result.name += " (" + district + ")";
-                    }
+                const district = doc.districts[0];
+                if (typeof district === "string") {
+                    result.district = district;
+                    result.name += " (" + district + ")";
                 }
+                result.postal = doc.POSTCODE;
+                result.district = doc.DISTRICT;
+            }
                 return result;
-            },
-            callback,
-        );
+        }, callback);
 
         request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
     };
