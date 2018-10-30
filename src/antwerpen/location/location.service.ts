@@ -23,21 +23,20 @@ const getStreetAndNr = (search: string = "") => {
         if (result.street) {
             result.street += " ";
         }
-        //checks if last part contains number at the end
-        if(/\d$/.test(part) && (index + 1) == parts.length){
+        // checks if last part contains number at the end
+        if (/\d$/.test(part) && ((index + 1) === parts.length)) {
             result.num = part.replace(/^[0-9]\-[a-z]+/g, '');
             result.street += part.replace(/\d*$/, '');
-        }else{
+        } else {
             result.street += part;
         }
     });
 
     // strip district from street name (e.g. " (Deurne)")
     result.street = result.street.trim().replace(/\s+\([a-z\s\,]+\)$/gi, "");
-    // result.street = result.street.trim().replace(/\s*/gi, '').replace(/\(*/g, '').replace(/[a-z]*/gi, '').replace(/\)*/g, '').replace(/\,*/g,'');
 
     // check if street contains numbers at the end and removes those numbers
-    if(/[a-z]\d*$/.test(result.street)){
+    if (/[a-z]\d*$/.test(result.street)) {
         result.street = result.street.replace(/[0-9]*$/g, '');
     }
 
@@ -46,7 +45,6 @@ const getStreetAndNr = (search: string = "") => {
 
     // strip district from num field in case it's there (For some reason it gets into the num field in some cases)
     result.num = result.num.trim().replace(/^\([a-z\s\,]*\)/gi, "");
-    
     return result;
 };
 
@@ -85,9 +83,11 @@ export = function createLocationService(
         const responseHandler = handleResponse('features', (doc: any): LocationItem => {
             const { x, y } = doc.geometry;
             const latLng = lambertToLatLng(x, y);
+            let nameFormat = doc.attributes.STRAATNAAM + ' ' + doc.attributes.HUISNR;
+            nameFormat +=  ', ' + doc.attributes.POSTCODE + ' ' + doc.attributes.DISTRICT;
             return {
                 id: '' + doc.attributes.ID,
-                name: doc.attributes.STRAATNAAM + ' ' + doc.attributes.HUISNR + ', ' + doc.attributes.POSTCODE + ' ' + doc.attributes.DISTRICT,
+                name: nameFormat,
                 street: doc.attributes.STRAATNM,
                 number: doc.attributes.HUISNR,
                 postal: doc.attributes.POSTCODE,
@@ -159,11 +159,11 @@ export = function createLocationService(
                     coordinates,
                     polygons,
                 };
-            if (isStreet) {
+                if (isStreet) {
                 result.street = doc.name;
                 result.streetid = doc.streetNameId;
             }
-            if (doc.districts && doc.districts.length) {
+                if (doc.districts && doc.districts.length) {
                 const district = doc.districts[0];
                 if (typeof district === "string") {
                     result.district = district;
@@ -172,7 +172,7 @@ export = function createLocationService(
                 result.postal = doc.POSTCODE;
                 result.district = doc.DISTRICT;
             }
-            return result;
+                return result;
         }, callback);
 
         request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
