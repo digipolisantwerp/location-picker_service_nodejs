@@ -77,14 +77,14 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.3.0...HEAD
-[2.3.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.2.1...v2.3.0
-[2.2.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.2.0...v2.2.1
-[2.2.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.3...v2.2.0
-[2.1.3]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.2...v2.1.3
-[2.1.2]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.1...v2.1.2
-[2.1.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.0...v2.1.1
-[2.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.0.0...v2.1.0
-[2.0.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.1.0...v2.0.0
-[1.1.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v1.0.2...v1.1.0
-[1.0.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v0.0.1...v1.0.1
+[Unreleased]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.2.1...v2.3.0
+[2.2.1]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.2.0...v2.2.1
+[2.2.0]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.1.3...v2.2.0
+[2.1.3]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.1.2...v2.1.3
+[2.1.2]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.1.1...v2.1.2
+[2.1.1]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.1.0...v2.1.1
+[2.1.0]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v2.0.0...v2.1.0
+[2.0.0]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/digipolisantwerp/location-picker_service_nodejs/compare/v0.0.1...v1.0.1
