@@ -12,6 +12,15 @@ All notable changes to this project will be documented in this file.
 "### Fixed" for any bug fixes.
 "### Security" in case of vulnerabilities.
 -->
+
+## [2.2.1] - 2018-10-23
+
+- Fix coordinates service unable to find bicycle routes
+
+## [2.2.0] - 2018-10-18
+
+- Added polygons array to the location POI object
+
 ## [2.1.3] - 2018-09-19
 
 ### Fixed
@@ -61,7 +70,9 @@ All notable changes to this project will be documented in this file.
 
 - Initial release.
 
-[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.3...HEAD
+[Unreleased]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.2.1...HEAD
+[2.2.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.2.0...v2.2.1
+[2.2.0]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.3...v2.2.0
 [2.1.3]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/digipolisantwerp/contact-picker_widget_angular/compare/v2.1.0...v2.1.1
