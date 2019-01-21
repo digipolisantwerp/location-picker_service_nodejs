@@ -63,6 +63,21 @@ const getRequestOptions = (url: string, auth?: string) => {
 
 const sortByNameFn = (a: LocationItem, b: LocationItem) => a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 
+// A function to sort by layer in the same way it is done in Stad In Kaart
+function sortByLayer(unsortedList: LocationItem[]) {
+    const districtList = unsortedList.filter((obj) => obj.layer.toLowerCase() === "district");
+    const streetList = unsortedList.filter((obj) => obj.layer.toLowerCase() === "straatnaam");
+    const leftoverList = unsortedList.filter((obj) =>
+        obj.layer.toLowerCase() !== "district" &&
+        obj.layer.toLowerCase() !== "straatnaam");
+
+    const combinedList: LocationItem[] = [];
+    districtList.forEach((item) => combinedList.push(item));
+    streetList.forEach((item) => combinedList.push(item));
+    leftoverList.forEach((item) => combinedList.push(item));
+    return combinedList;
+}
+
 /**
  * Create a function that calls the CRAB and SOLR services and finds locations
  *
@@ -70,7 +85,7 @@ const sortByNameFn = (a: LocationItem, b: LocationItem) => a.name.toLowerCase().
  */
 export = function createLocationService(
     config: LocationServiceConfig,
-): (search: string, types: string) => Promise<LocationItem[]> {
+): (search: string, types: string, sort: string) => Promise<LocationItem[]> {
     const getAddress = (street: string, num: string, callback: handleResponseFn<LocationItem>) => {
         // quotes need to be doubled for escaping into sql
         street = encodeURIComponent(filterSqlVar(street).replace(/'/g, "''"));
@@ -178,11 +193,15 @@ export = function createLocationService(
         request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
     };
 
-    return (search: string, types: string = "street,number,poi"): Promise<LocationItem[]> => {
+    return (search: string, types: string = "street,number,poi", sort: string = "name"): Promise<LocationItem[]> => {
         return new Promise((resolve, reject) => {
             const callback = (error: any, result: LocationItem[]) => {
                 if (result) {
-                    result = result.sort(sortByNameFn);
+                    if (sort === "name") {
+                        result = result.sort(sortByNameFn);
+                    } else if (sort === "layer") {
+                        result = sortByLayer(result);
+                    }
                 }
                 if (error) {
                     reject(error);
