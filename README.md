@@ -91,6 +91,8 @@ The service implements the following first protocol:
 - search = the text that the user typed on which to match
 - types = types to query for
   - Possible types are `street` (street names), `number` (address excluding bus) and `poi` (point of interest)- Comma-separated, default value is `street,number,poi`
+- sort = how the result should be sorted
+  - Possible sorting methods are `layer` (prioritizes districts, followed by streets, followed by the rest) and `name` (sorts in alphabetical order), default value is `name`
 - result = JSON-encoded array of [LocationItem](src/types.ts) objects
 
 The service implements the following second protocol:

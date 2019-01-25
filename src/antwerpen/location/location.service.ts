@@ -4,6 +4,7 @@ import { handleResponse, handleResponseFn } from "../../helpers/handleResponse";
 import lambertToLatLng from "../../helpers/lambertToLatLng";
 import { LocationItem, LocationType, Coordinates, LatLngCoordinate } from "../../types";
 import { LocationServiceConfig } from "../types";
+import sortByLayer from "../../helpers/sortByLayer";
 
 const getStreetAndNr = (search: string = "") => {
     const result = {
@@ -62,21 +63,6 @@ const getRequestOptions = (url: string, auth?: string) => {
 };
 
 const sortByNameFn = (a: LocationItem, b: LocationItem) => a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-
-// A function to sort by layer in the same way it is done in Stad In Kaart
-function sortByLayer(unsortedList: LocationItem[]) {
-    const districtList = unsortedList.filter((obj) => obj.layer.toLowerCase() === "district");
-    const streetList = unsortedList.filter((obj) => obj.layer.toLowerCase() === "straatnaam");
-    const leftoverList = unsortedList.filter((obj) =>
-        obj.layer.toLowerCase() !== "district" &&
-        obj.layer.toLowerCase() !== "straatnaam");
-
-    const combinedList: LocationItem[] = [];
-    districtList.forEach((item) => combinedList.push(item));
-    streetList.forEach((item) => combinedList.push(item));
-    leftoverList.forEach((item) => combinedList.push(item));
-    return combinedList;
-}
 
 /**
  * Create a function that calls the CRAB and SOLR services and finds locations
