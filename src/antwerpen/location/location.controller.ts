@@ -7,7 +7,7 @@ import { LocationServiceConfig } from '../types';
 const locationSearchController = (config: LocationServiceConfig) => {
     const service = createLocationService(config);
     return (req: Request, res: Response, next: NextFunction) => {
-        service(req.query.search, req.query.types).then((result: LocationItem[]) => {
+        service(req.query.search, req.query.types, req.query.id).then((result: LocationItem[]) => {
             res.json(result);
         }).catch((error: any) => {
             next(error);
