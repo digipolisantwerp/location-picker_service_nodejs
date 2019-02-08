@@ -63,11 +63,11 @@ Create a .env file containing:
 PORT=9999
 SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
 SOLR_AUTHORIZATION=
-CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
+CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/0/query
 # only for coordinates service:
-OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
-MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Mobiliteit/MapServer/6/query
-REGIONAL_ROAD_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/basisdata/Mapserver/5
+OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/identify
+MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/6/query
+REGIONAL_ROAD_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/2
 ```
 
 Run the service:

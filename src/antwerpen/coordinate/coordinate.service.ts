@@ -24,27 +24,33 @@ export class CoordinateService {
                 return park;
             }
 
-            return this.getNearestAddress(lat, lng, 25).then((route25m: LocationItem) => {
-                if (route25m) {
-                    return route25m;
+            return this.getGlassContainers(lat, lng).then((glassContainer: LocationItem) => {
+                if (glassContainer) {
+                    return glassContainer;
                 }
 
-                return this.getBicycleRoute(lat, lng).then((bicycleRoute: LocationItem) => {
-                    if (bicycleRoute) {
-                        return bicycleRoute;
+                return this.getNearestAddress(lat, lng, 25).then((route25m: LocationItem) => {
+                    if (route25m) {
+                        return route25m;
                     }
 
-                    return this.getStreet(lat, lng).then((street: LocationItem) => {
-                        if (street) {
-                            return street;
+                    return this.getBicycleRoute(lat, lng).then((bicycleRoute: LocationItem) => {
+                        if (bicycleRoute) {
+                            return bicycleRoute;
                         }
 
-                        return this.getNearestAddress(lat, lng, 100).then((route100m: LocationItem) => {
-                            if (route100m) {
-                                return route100m;
+                        return this.getStreet(lat, lng).then((street: LocationItem) => {
+                            if (street) {
+                                return street;
                             }
 
-                            return this.getRegionalRoad(lat, lng);
+                            return this.getNearestAddress(lat, lng, 100).then((route100m: LocationItem) => {
+                                if (route100m) {
+                                    return route100m;
+                                }
+
+                                return this.getRegionalRoad(lat, lng);
+                            });
                         });
                     });
                 });
@@ -54,7 +60,51 @@ export class CoordinateService {
 
     private getPark(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const tolerance = 0;
-        const layerId = 21;
+        const layerId = 6;
+
+        return this.getPointWithin(lng, lat, tolerance, layerId, this.config.openSpaceUrl).then((response: any) => {
+            if (!response || !response.results || !response.results.length) {
+                return Promise.resolve(undefined);
+            }
+
+            const doc = response.results[0];
+            const { rings } = doc.geometry;
+            const result: LocationItem = {
+                id: "" + doc.attributes.OBJECTID,
+                name: doc.attributes.NAAM,
+                street: doc.attributes.STRAAT,
+                number: doc.attributes.HUISNR,
+                postal: doc.attributes.POSTCODE,
+                district: doc.attributes.DISTRICT,
+                locationType: LocationType.Park,
+                polygons: rings
+                    ? rings.map((ring: any[]) => {
+                          return (
+                              ring
+                                  .map((x: any[]) => {
+                                      if (x.length < 2) {
+                                          return undefined;
+                                      }
+
+                                      return {
+                                          lat: x[1],
+                                          lng: x[0],
+                                      };
+                                  })
+                                  // filter out the undefined values
+                                  .filter((x) => x)
+                          );
+                      })
+                    : [],
+            };
+
+            return Promise.resolve(result);
+        });
+    }
+
+    private getGlassContainers(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
+        const tolerance = 0;
+        const layerId = 7;
 
         return this.getPointWithin(lng, lat, tolerance, layerId, this.config.openSpaceUrl).then((response: any) => {
             if (!response || !response.results || !response.results.length) {
@@ -98,50 +148,55 @@ export class CoordinateService {
 
     private getBicycleRoute(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const range = 20;
-        const layerId = 6;
+        const layerId = 9;
+        const tolerance = 9;
 
-        return this.getPointNearby(lng, lat, range, this.config.mobilityUrl).then((response: any) => {
-            if (!response || !response.features || !response.features.length) {
-                return Promise.resolve(undefined);
-            }
+        return this.getPointNearby(lng, lat, range, this.config.mobilityUrl, layerId, tolerance).then(
+            (response: any) => {
+                if (!response || !response.features || !response.features.length) {
+                    return Promise.resolve(undefined);
+                }
 
-            const doc = response.features[0];
-            const { paths } = doc.geometry;
-            const result: LocationItem = {
-                id: "" + doc.attributes.ObjectID,
-                name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? " " + doc.attributes.HUISNR : ""),
-                street: doc.attributes.STRAAT,
-                number: doc.attributes.HUISNR,
-                postal: doc.attributes.postcode_links,
-                locationType: LocationType.BicycleRoute,
-                polygons: paths
-                    ? paths.map((ring: any[]) => {
-                          return (
-                              ring
-                                  .map((x: any[]) => {
-                                      if (x.length < 2) {
-                                          return undefined;
-                                      }
+                const doc = response.features[0];
+                const { paths } = doc.geometry;
+                const result: LocationItem = {
+                    id: "" + doc.attributes.ObjectID,
+                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? " " + doc.attributes.HUISNR : ""),
+                    street: doc.attributes.STRAAT,
+                    number: doc.attributes.HUISNR,
+                    postal: doc.attributes.postcode_links,
+                    locationType: LocationType.BicycleRoute,
+                    polygons: paths
+                        ? paths.map((ring: any[]) => {
+                              return (
+                                  ring
+                                      .map((x: any[]) => {
+                                          if (x.length < 2) {
+                                              return undefined;
+                                          }
 
-                                      return {
-                                          lat: x[1],
-                                          lng: x[0],
-                                      };
-                                  })
-                                  // filter out the undefined values
-                                  .filter((x) => x)
-                          );
-                      })
-                    : [],
-            };
+                                          return {
+                                              lat: x[1],
+                                              lng: x[0],
+                                          };
+                                      })
+                                      // filter out the undefined values
+                                      .filter((x) => x)
+                              );
+                          })
+                        : [],
+                };
 
-            return Promise.resolve(result);
-        });
+                return Promise.resolve(result);
+            },
+        );
     }
 
     private getStreet(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const range = 10;
-        return this.getPointNearby(lng, lat, range, this.config.crabUrl).then((response: any) => {
+        const tolerance = 0;
+        const layerid = 2;
+        return this.getPointNearby(lng, lat, range, this.config.crabUrl, tolerance, layerid).then((response: any) => {
             if (!response || !response.features || !response.features.length) {
                 return Promise.resolve(undefined);
             }
@@ -197,20 +252,24 @@ export class CoordinateService {
     }
 
     private getRegionalRoad(lat: number = 0.0, lng: number = 0.0, range = 100): Promise<LocationItem> {
-        return this.getPointNearby(lng, lat, range, this.config.regionalRoadUrl).then((response: any) => {
-            if (!response) {
-                return Promise.resolve(undefined);
-            }
+        const layer = 2;
+        const tolerance = 0;
+        return this.getPointNearby(lng, lat, range, this.config.regionalRoadUrl, layer, tolerance).then(
+            (response: any) => {
+                if (!response) {
+                    return Promise.resolve(undefined);
+                }
 
-            const doc = response;
-            const result: LocationItem = {
-                id: "" + doc.id,
-                name: doc.description,
-                locationType: LocationType.RegionalRoad,
-            };
+                const doc = response;
+                const result: LocationItem = {
+                    id: "" + doc.id,
+                    name: doc.description,
+                    locationType: LocationType.RegionalRoad,
+                };
 
-            return Promise.resolve(result);
-        });
+                return Promise.resolve(result);
+            },
+        );
     }
 
     private getPointWithin(
@@ -252,7 +311,14 @@ export class CoordinateService {
         return requestPromise(this.getRequestOptions(url));
     }
 
-    private getPointNearby(lat: number = 0.0, lng: number = 0.0, range: number = 5, layerUrl: string) {
+    private getPointNearby(
+        lat: number = 0.0,
+        lng: number = 0.0,
+        range: number = 5,
+        layerUrl: string,
+        tolerance: number = 0,
+        layer: number,
+    ) {
         const url =
             "https://querybylocation.antwerpen.be/querybylocation/pointnearby" +
             "?url=" +
@@ -261,6 +327,10 @@ export class CoordinateService {
             "&tolerance=0" +
             "&range=" +
             range +
+            "&tolerance=" +
+            tolerance +
+            "&layerids=" +
+            layer +
             "&x=" +
             lng +
             "&y=" +

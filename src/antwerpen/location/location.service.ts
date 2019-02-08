@@ -85,6 +85,7 @@ export = function createLocationService(
             const latLng = lambertToLatLng(x, y);
             let nameFormat = doc.attributes.STRAATNAAM + ' ' + doc.attributes.HUISNR;
             nameFormat +=  ', ' + doc.attributes.POSTCODE + ' ' + doc.attributes.DISTRICT;
+
             return {
                 id: '' + doc.attributes.ID,
                 name: nameFormat,
@@ -128,6 +129,7 @@ export = function createLocationService(
                 }
 
                 let polygons = Array<LatLngCoordinate[]>();
+
                 if (doc && doc.geometry) {
                     try {
                         const geometry = JSON.parse(doc.geometry);
@@ -150,6 +152,10 @@ export = function createLocationService(
                     }
                 }
 
+                console.log('---------------------------------------------');
+                console.log(doc);
+                console.log('---------------------------------------------');
+
                 const isStreet = doc.layer === "straatnaam";
                 const result: LocationItem = {
                     id: doc.id,
@@ -159,19 +165,19 @@ export = function createLocationService(
                     coordinates,
                     polygons,
                 };
+
                 if (isStreet) {
-                result.street = doc.name;
-                result.streetid = doc.streetNameId;
-            }
-                if (doc.districts && doc.districts.length) {
-                const district = doc.districts[0];
-                if (typeof district === "string") {
-                    result.district = district;
-                    result.name += " (" + district + ")";
+                    result.street = doc.name;
+                    result.streetid = doc.streetNameId;
                 }
-                result.postal = doc.POSTCODE;
-                result.district = doc.DISTRICT;
-            }
+
+                if (doc.districts && doc.districts.length) {
+                    const district = doc.districts[0];
+                    if (typeof district === "string") {
+                        result.district = district;
+                        result.name += " (" + district + ")";
+                    }
+                }
                 return result;
         }, callback);
 
