@@ -30,8 +30,15 @@
             "name": "search",
             "in": "query",
             "description": "The search string to match locations by",
-            "required": true,
+            "required": false,
             "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The location id",
+            "required": false,
+            "type": "integer"
           },
           {
             "name": "types",
