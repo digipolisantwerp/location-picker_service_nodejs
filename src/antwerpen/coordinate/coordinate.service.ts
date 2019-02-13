@@ -39,19 +39,19 @@ export class CoordinateService {
                             return bicycleRoute;
                         }
 
-                        return this.getStreet(lat, lng).then((street: LocationItem) => {
-                            if (street) {
-                                return street;
+                        // return this.getStreet(lat, lng).then((street: LocationItem) => {
+                        //     if (street) {
+                        //         return street;
+                        //     }
+
+                        return this.getNearestAddress(lat, lng, 100).then((route100m: LocationItem) => {
+                            if (route100m) {
+                                return route100m;
                             }
 
-                            return this.getNearestAddress(lat, lng, 100).then((route100m: LocationItem) => {
-                                if (route100m) {
-                                    return route100m;
-                                }
-
-                                return this.getRegionalRoad(lat, lng);
-                            });
+                            return this.getRegionalRoad(lat, lng);
                         });
+                        // });
                     });
                 });
             });
@@ -253,7 +253,7 @@ export class CoordinateService {
 
     private getRegionalRoad(lat: number = 0.0, lng: number = 0.0, range = 100): Promise<LocationItem> {
         const layer = 2;
-        const tolerance = 0;
+        const tolerance = 1;
         return this.getPointNearby(lng, lat, range, this.config.regionalRoadUrl, layer, tolerance).then(
             (response: any) => {
                 if (!response) {

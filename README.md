@@ -69,7 +69,6 @@ OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/m
 MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/6/query
 REGIONAL_ROAD_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/2
 ```
-
 Run the service:
 
 ```sh
