@@ -56,46 +56,44 @@ export class CoordinateService {
         const tolerance = 0;
         const layerId = 6;
 
-        return this.getPointWithin(lng, lat, tolerance, layerId, this.config.arcGisUrl).then(
-            (response: any) => {
-                if (!response || !response.results || !response.results.length) {
-                    return Promise.resolve(undefined);
-                }
+        return this.getPointWithin(lng, lat, tolerance, layerId, this.config.arcGisUrl).then((response: any) => {
+            if (!response || !response.results || !response.results.length) {
+                return Promise.resolve(undefined);
+            }
 
-                const doc = response.results[0];
-                const { rings } = doc.geometry;
-                const result: LocationItem = {
-                    id: "" + doc.attributes.OBJECTID,
-                    name: doc.attributes.NAAM,
-                    street: doc.attributes.STRAAT,
-                    number: doc.attributes.HUISNR,
-                    postal: doc.attributes.POSTCODE,
-                    district: doc.attributes.DISTRICT,
-                    locationType: LocationType.Park,
-                    polygons: rings
-                        ? rings.map((ring: any[]) => {
-                              return (
-                                  ring
-                                      .map((x: any[]) => {
-                                          if (x.length < 2) {
-                                              return undefined;
-                                          }
+            const doc = response.results[0];
+            const { rings } = doc.geometry;
+            const result: LocationItem = {
+                id: "" + doc.attributes.OBJECTID,
+                name: doc.attributes.NAAM,
+                street: doc.attributes.STRAAT,
+                number: doc.attributes.HUISNR,
+                postal: doc.attributes.POSTCODE,
+                district: doc.attributes.DISTRICT,
+                locationType: LocationType.Park,
+                polygons: rings
+                    ? rings.map((ring: any[]) => {
+                          return (
+                              ring
+                                  .map((x: any[]) => {
+                                      if (x.length < 2) {
+                                          return undefined;
+                                      }
 
-                                          return {
-                                              lat: x[1],
-                                              lng: x[0],
-                                          };
-                                      })
-                                      // filter out the undefined values
-                                      .filter((x) => x)
-                              );
-                          })
-                        : [],
-                };
+                                      return {
+                                          lat: x[1],
+                                          lng: x[0],
+                                      };
+                                  })
+                                  // filter out the undefined values
+                                  .filter((x) => x)
+                          );
+                      })
+                    : [],
+            };
 
-                return Promise.resolve(result);
-            },
-        );
+            return Promise.resolve(result);
+        });
     }
 
     private getGlassContainers(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
@@ -134,78 +132,46 @@ export class CoordinateService {
         const range = 20;
         const layerId = 9;
 
-        return this.getPointNearby(lng, lat, range, layerId, this.config.arcGisUrl).then(
-            (response: any) => {
-                if (!response || !response.features || !response.features.length) {
-                    return Promise.resolve(undefined);
-                }
+        return this.getPointNearby(lng, lat, range, layerId, this.config.arcGisUrl).then((response: any) => {
+            if (!response || !response.features || !response.features.length) {
+                return Promise.resolve(undefined);
+            }
 
-                const doc = response.features[0];
-                const { paths } = doc.geometry;
-                const result: LocationItem = {
-                    id: "" + doc.attributes.ObjectID,
-                    name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? " " + doc.attributes.HUISNR : ""),
-                    street: doc.attributes.STRAAT,
-                    number: doc.attributes.HUISNR,
-                    postal: doc.attributes.postcode_links,
-                    locationType: LocationType.BicycleRoute,
-                    polygons: paths
-                        ? paths.map((ring: any[]) => {
-                              return (
-                                  ring
-                                      .map((x: any[]) => {
-                                          if (x.length < 2) {
-                                              return undefined;
-                                          }
+            const doc = response.features[0];
+            const { paths } = doc.geometry;
+            const result: LocationItem = {
+                id: "" + doc.attributes.ObjectID,
+                name: doc.attributes.STRAAT + (doc.attributes.HUISNR ? " " + doc.attributes.HUISNR : ""),
+                street: doc.attributes.STRAAT,
+                number: doc.attributes.HUISNR,
+                postal: doc.attributes.postcode_links,
+                locationType: LocationType.BicycleRoute,
+                polygons: paths
+                    ? paths.map((ring: any[]) => {
+                          return (
+                              ring
+                                  .map((x: any[]) => {
+                                      if (x.length < 2) {
+                                          return undefined;
+                                      }
 
-                                          return {
-                                              lat: x[1],
-                                              lng: x[0],
-                                          };
-                                      })
-                                      // filter out the undefined values
-                                      .filter((x) => x)
-                              );
-                          })
-                        : [],
-                };
+                                      return {
+                                          lat: x[1],
+                                          lng: x[0],
+                                      };
+                                  })
+                                  // filter out the undefined values
+                                  .filter((x) => x)
+                          );
+                      })
+                    : [],
+            };
 
-                return Promise.resolve(result);
-            },
-        );
+            return Promise.resolve(result);
+        });
     }
 
-    // private getStreet(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
-    //     const layerid = 2;
-    //     const range = 8;
-    //     return this.getPointNearby(lng, lat, range, layerid, this.config.arcGisUrl).then((response: any) => {
-    //         if (!response || !response.features || !response.features.length) {
-    //             return Promise.resolve(undefined);
-    //         }
-
-    //         const doc = response.features[0];
-    //         const { x, y } = doc.geometry;
-    //         const result: LocationItem = {
-    //             id: "" + doc.attributes.OBJECTID,
-    //             name: doc.attributes.STRAATNM + (doc.attributes.HUISNR ? " " + doc.attributes.HUISNR : ""),
-    //             street: doc.attributes.STRAATNM,
-    //             number: doc.attributes.HUISNR,
-    //             postal: doc.attributes.POSTCODE,
-    //             district: doc.attributes.GEMEENTE,
-    //             locationType: LocationType.Street,
-    //             coordinates: {
-    //                 latLng: {
-    //                     lat: x,
-    //                     lng: y,
-    //                 },
-    //             },
-    //         };
-
-    //         return Promise.resolve(result);
-    //     });
-    // }
-
-    private getNearestAddress(lat: number = 0.0, lng: number = 0.0, range: number ): Promise<LocationItem> {
+    private getNearestAddress(lat: number = 0.0, lng: number = 0.0, range: number): Promise<LocationItem> {
         return this.reverseGeocode(lng, lat, range).then((response: any) => {
             if (!response || !response.length) {
                 return Promise.resolve(undefined);
@@ -237,45 +203,44 @@ export class CoordinateService {
         const layerId = 2;
         const range = 8;
         return this.getPointNearby(lng, lat, range, layerId, this.config.arcGisUrl).then((response: any) => {
-                if (!response) {
-                    return Promise.resolve(undefined);
-                }
+            if (!response) {
+                return Promise.resolve(undefined);
+            }
 
-                if (response.features && !response.features.length) {
-                    return Promise.resolve(undefined);
-                }
+            if (response.features && !response.features.length) {
+                return Promise.resolve(undefined);
+            }
 
-                const doc = response.features[0];
-                const { paths } = doc.geometry;
-                const result: LocationItem = {
-                    id: "" + doc.attributes.OBJECTID,
-                    name: doc.attributes.LSTRNM,
-                    street: doc.attributes.LSTRNM,
-                    locationType: LocationType.RegionalRoad,
-                    polygons: paths
-                        ? paths.map((ring: any[]) => {
-                            return (
-                                ring
-                                    .map((x: any[]) => {
-                                        if (x.length < 2) {
-                                            return undefined;
-                                        }
+            const doc = response.features[0];
+            const { paths } = doc.geometry;
+            const result: LocationItem = {
+                id: "" + doc.attributes.OBJECTID,
+                name: doc.attributes.LSTRNM,
+                street: doc.attributes.LSTRNM,
+                locationType: LocationType.RegionalRoad,
+                polygons: paths
+                    ? paths.map((ring: any[]) => {
+                          return (
+                              ring
+                                  .map((x: any[]) => {
+                                      if (x.length < 2) {
+                                          return undefined;
+                                      }
 
-                                        return {
-                                            lat: x[1],
-                                            lng: x[0],
-                                        };
-                                    })
-                                    // filter out the undefined values
-                                    .filter((x) => x)
-                            );
-                        })
-                        : [],
-                };
+                                      return {
+                                          lat: x[1],
+                                          lng: x[0],
+                                      };
+                                  })
+                                  // filter out the undefined values
+                                  .filter((x) => x)
+                          );
+                      })
+                    : [],
+            };
 
-                return Promise.resolve(result);
-            },
-        );
+            return Promise.resolve(result);
+        });
     }
 
     private getPointWithin(
@@ -288,7 +253,8 @@ export class CoordinateService {
         const url =
             "https://querybylocation.antwerpen.be/querybylocation/pointwhitin" +
             "?url=" +
-            layerUrl + "/identify" +
+            layerUrl +
+            "/identify" +
             "&sr=4326" +
             "&tolerance=" +
             tolerance +
@@ -332,7 +298,7 @@ export class CoordinateService {
             lng +
             "&y=" +
             lat;
-            
+
         return requestPromise(this.getRequestOptions(url));
     }
 
