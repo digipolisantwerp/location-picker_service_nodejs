@@ -7,7 +7,8 @@ import { CoordinateServiceConfig } from '../types';
 const coordinateSearchController = (config: CoordinateServiceConfig) => {
     const service = new CoordinateService(config);
     return (req: Request, res: Response, next: NextFunction) => {
-        service.getLocation(req.query.lat, req.query.lng).then((result: LocationItem) => {
+        service.getLocation(req.query.lat, req.query.lng)
+        .then((result: LocationItem) => {
             if (!result) {
                 return res.end();
             }

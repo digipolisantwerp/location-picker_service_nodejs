@@ -37,10 +37,7 @@ app.get('/api/locations', locationSearch);
 
 // coordinates api for planned leaflet extension (not currently needed):
 const coordinateSearch = lib.antwerpen.coordinateSearchController({
-    crabUrl: process.env.CRAB_URL,
-    openSpaceUrl: process.env.OPEN_SPACE_URL,
-    mobilityUrl: process.env.MOBILITY_URL,
-    regionalRoadUrl: process.env.REGIONAL_ROAD_URL
+    arcGisUrl: process.env.ARC_GIS_URL
 });
 app.get('/api/coordinates', coordinateSearch);
 
@@ -65,9 +62,7 @@ SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
 SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/0/query
 # only for coordinates service:
-OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/identify
-MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/6/query
-REGIONAL_ROAD_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer/2
+ARC_GIS_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer
 ```
 Run the service:
 
