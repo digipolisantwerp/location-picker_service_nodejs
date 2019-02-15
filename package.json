@@ -1,6 +1,6 @@
 {
   "name": "@acpaas-ui-widgets/nodejs-location-picker",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Location Picker Smart Widget BFF package (Node)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -41,8 +41,8 @@
     "@types/request-promise": "^4.1.41",
     "hoek": "^5.0.3",
     "istanbul": "^0.4.5",
-    "jasmine-growl-reporter": "^1.0.1",
-    "jasmine-node": "^1.14.5",
+    "jasmine-growl-reporter": "^2.0.0",
+    "jasmine-node": "^2.0.1",
     "nodemon": "^1.17.5",
     "proxyquire": "^2.0.1",
     "rimraf": "^2.6.2",

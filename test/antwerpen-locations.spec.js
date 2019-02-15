@@ -88,6 +88,23 @@ describe('antwerpen', () => {
                     expect(result[0].id).toEqual("A_DA/Locaties/MapServer/18/86232");
                 });
             });
+            it('should query CRAB for an id', () => {
+                const query = 'generaal armstrongweg';
+                const createService = proxyquire('../dist/antwerpen/location/location.service', {
+                    'request': (options, handler) => {
+                        expect(options.url).toEqual(crabTestUrl + "?f=json&orderByFields=HUISNR&where=ID=10&outFields=*");
+                        return handler(null, {
+                            statusCode: 200
+                        }, dummySolrResult);
+                    }
+                });
+                const fn = createService({solrGisAuthorization: solrTestAuth, solrGisUrl: solrTestUrl, crabUrl: crabTestUrl});
+                fn(undefined, undefined, 10).then((result) => {
+                    expect(result).not.toBeNull();
+                    expect(result.length).toEqual(1);
+                    expect(result[0].id).toEqual("A_DA/Locaties/MapServer/18/86232");
+                });
+            });
         });
 
         describe('createController', () => {

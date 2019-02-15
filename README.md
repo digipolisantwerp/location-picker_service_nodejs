@@ -1,6 +1,6 @@
 # Location Picker Smart Widget BFF (Node)
 
-This is a Node.js backend service library to create a BFF service for the Location Picker Smart Widget. The Location Picker widget provides a picker field to choose a street, street address or point of interest from GIS sources. This service is matched by a [corresponding UI](https://github.com/digipolisantwerp/location-picker_widget_angular).
+This is a Node.js backend service library to create a BFF service for the Location Picker Smart Widget. The Location Picker widget provides a picker field to choose a street, street address, addressID or point of interest from GIS sources. This service is matched by a [corresponding UI](https://github.com/digipolisantwerp/location-picker_widget_angular).
 
 There is a **demo service**, see below for instructions on running it.
 
@@ -37,10 +37,7 @@ app.get('/api/locations', locationSearch);
 
 // coordinates api for planned leaflet extension (not currently needed):
 const coordinateSearch = lib.antwerpen.coordinateSearchController({
-    crabUrl: process.env.CRAB_URL,
-    openSpaceUrl: process.env.OPEN_SPACE_URL,
-    mobilityUrl: process.env.MOBILITY_URL,
-    regionalRoadUrl: process.env.REGIONAL_ROAD_URL
+    arcGisUrl: process.env.ARC_GIS_URL
 });
 app.get('/api/coordinates', coordinateSearch);
 
@@ -65,11 +62,8 @@ SOLR_GIS_URL=https://esb-app1-p.antwerpen.be/v1/giszoek/solr/search
 SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
 # only for coordinates service:
-OPEN_SPACE_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Open_ruimte/Mapserver/identify
-MOBILITY_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/Mobiliteit/MapServer/6/query
-REGIONAL_ROAD_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/basisdata/Mapserver/5
+ARC_GIS_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer
 ```
-
 Run the service:
 
 ```sh
@@ -87,8 +81,9 @@ The UI demo app expects the service to run on port 9999.
 
 The service implements the following first protocol:
 
-- GET /path/to/endpoint?search=...&types=...
+- GET /path/to/endpoint?search=...&types=...&id=..
 - search = the text that the user typed on which to match
+- id = the id of the location. This overrides search. (Optional)
 - types = types to query for
   - Possible types are `street` (street names), `number` (address excluding bus) and `poi` (point of interest)- Comma-separated, default value is `street,number,poi`
 - sort = how the result should be sorted

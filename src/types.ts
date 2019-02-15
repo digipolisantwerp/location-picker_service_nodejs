@@ -24,25 +24,26 @@ export interface LocationItem {
 }
 
 export interface Coordinates {
-	latLng?: LatLngCoordinate;
-	lambert?: LambertCoordinate;
+    latLng?: LatLngCoordinate;
+    lambert?: LambertCoordinate;
 }
 
 export interface LambertCoordinate {
-	x: number;
-	y: number;
+    x: number;
+    y: number;
 }
 
 export interface LatLngCoordinate {
-	lat: number;
-	lng: number;
+    lat: number;
+    lng: number;
 }
 
 export enum LocationType {
-	Street = "street",
-	Number = "number",
-	Poi = "poi",
-	Park = "park",
-	BicycleRoute = "bicycleroute",
-	RegionalRoad = "regionalroad",
+    Street = "street",
+    Number = "number",
+    Poi = "poi",
+    Park = "park",
+    BicycleRoute = "bicycleroute",
+    GlassContainer = "glasscontainer",
+    RegionalRoad = "regionalroad",
 }

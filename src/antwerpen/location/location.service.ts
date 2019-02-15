@@ -2,52 +2,10 @@ import request = require("request");
 import filterSqlVar from "../../helpers/filterSqlVar";
 import { handleResponse, handleResponseFn } from "../../helpers/handleResponse";
 import lambertToLatLng from "../../helpers/lambertToLatLng";
-import { LocationItem, LocationType, Coordinates, LatLngCoordinate } from "../../types";
+import { formatAddress, formatLocationItem, getStreetAndNr} from "../../helpers/format";
+import { LocationItem } from "../../types";
 import { LocationServiceConfig } from "../types";
 import sortByLayer from "../../helpers/sortByLayer";
-
-const getStreetAndNr = (search: string = "") => {
-    const result = {
-        street: "",
-        num: "",
-    };
-    // split into street name and number
-    const parts = search.split(" ");
-    parts.forEach((part, index) => {
-        const matches = /[0-9]$/.exec(part);
-        if ((index > 0) && matches) {
-            if (!!result.num || matches.index === 0) {
-                result.num += part + "";
-                return;
-            }
-        }
-        if (result.street) {
-            result.street += " ";
-        }
-        // checks if last part contains number at the end
-        if (/\d$/.test(part) && ((index + 1) === parts.length)) {
-            result.num = part.replace(/^[0-9]\-[a-z]+/g, '');
-            result.street += part.replace(/\d*$/, '');
-        } else {
-            result.street += part;
-        }
-    });
-
-    // strip district from street name (e.g. " (Deurne)")
-    result.street = result.street.trim().replace(/\s+\([a-z\s\,]+\)$/gi, "");
-
-    // check if street contains numbers at the end and removes those numbers
-    if (/[a-z]\d*$/.test(result.street)) {
-        result.street = result.street.replace(/[0-9]*$/g, '');
-    }
-
-    // makes sure the number field doesn't contain the street and removes spaces
-    result.num = search.replace(result.street, '').replace(/\s/g, '');
-
-    // strip district from num field in case it's there (For some reason it gets into the num field in some cases)
-    result.num = result.num.trim().replace(/^\([a-z\s\,]*\)/gi, "");
-    return result;
-};
 
 const getRequestOptions = (url: string, auth?: string) => {
     return {
@@ -71,7 +29,7 @@ const sortByNameFn = (a: LocationItem, b: LocationItem) => a.name.toLowerCase().
  */
 export = function createLocationService(
     config: LocationServiceConfig,
-): (search: string, types: string, sort: string) => Promise<LocationItem[]> {
+): (search: string, types: string, sort: string, id?: number) => Promise<LocationItem[]> {
     const getAddress = (street: string, num: string, callback: handleResponseFn<LocationItem>) => {
         // quotes need to be doubled for escaping into sql
         street = encodeURIComponent(filterSqlVar(street).replace(/'/g, "''"));
@@ -81,26 +39,13 @@ export = function createLocationService(
             "?f=json&orderByFields=HUISNR&where=GEMEENTE='Antwerpen' and " +
             `STRAATNM LIKE '${street}%' and HUISNR='${num}' ` +
             "and APPTNR='' and BUSNR=''&outFields=*";
-        const responseHandler = handleResponse('features', (doc: any): LocationItem => {
-            const { x, y } = doc.geometry;
-            const latLng = lambertToLatLng(x, y);
-            let nameFormat = doc.attributes.STRAATNAAM + ' ' + doc.attributes.HUISNR;
-            nameFormat +=  ', ' + doc.attributes.POSTCODE + ' ' + doc.attributes.DISTRICT;
-            return {
-                id: '' + doc.attributes.ID,
-                name: nameFormat,
-                street: doc.attributes.STRAATNM,
-                number: doc.attributes.HUISNR,
-                postal: doc.attributes.POSTCODE,
-                district: doc.attributes.DISTRICT,
-                locationType: LocationType.Number,
-                layer: 'CRAB',
-                coordinates: {
-                    latLng,
-                    lambert: { x, y }
-                }
-            };
-        }, callback);
+        const responseHandler = handleResponse('features', formatAddress, callback);
+        request(getRequestOptions(url), responseHandler);
+    };
+
+    const getAddressByID = (id: number, callback: handleResponseFn<LocationItem>) => {
+        const url = `${config.crabUrl}?f=json&orderByFields=HUISNR&where=ID=${id}&outFields=*`;
+        const responseHandler = handleResponse('features', formatAddress, callback);
         request(getRequestOptions(url), responseHandler);
     };
 
@@ -116,70 +61,16 @@ export = function createLocationService(
             "?wt=json&rows=5&solrtype=gislocaties&dismax=true&bq=exactName:DISTRICT^20000.0" +
             "&bq=layer:straatnaam^20000.0" +
             `&q=(${encodeURIComponent(search)})`;
-
         const responseHandler = handleResponse(
             "response.docs",
-            (doc: any): LocationItem => {
-                let coordinates: Coordinates;
-                if (doc && (doc.x || doc.y)) {
-                    coordinates = {
-                        lambert: { x: doc.x, y: doc.y },
-                        latLng: lambertToLatLng(doc.x, doc.y),
-                    };
-                }
-
-                let polygons = Array<LatLngCoordinate[]>();
-                if (doc && doc.geometry) {
-                    try {
-                        const geometry = JSON.parse(doc.geometry);
-                        if (geometry[0].length > 0) {
-                            const geometry2d = doc.geometry[0];
-                            polygons = geometry.map((p: any[]) => {
-                                return p.map((xy: any[]) => {
-                                    if (xy.length < 2) {
-                                        return undefined;
-                                    }
-
-                                    const x = xy[0];
-                                    const y = xy[1];
-                                    return lambertToLatLng(x, y);
-                                });
-                            });
-                        }
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }
-
-                const isStreet = doc.layer === "straatnaam";
-                const result: LocationItem = {
-                    id: doc.id,
-                    name: doc.name,
-                    layer: doc.layer,
-                    locationType: isStreet ? LocationType.Street : LocationType.Poi,
-                    coordinates,
-                    polygons,
-                };
-                if (isStreet) {
-                result.street = doc.name;
-                result.streetid = doc.streetNameId;
-            }
-                if (doc.districts && doc.districts.length) {
-                const district = doc.districts[0];
-                if (typeof district === "string") {
-                    result.district = district;
-                    result.name += " (" + district + ")";
-                }
-                result.postal = doc.POSTCODE;
-                result.district = doc.DISTRICT;
-            }
-                return result;
-        }, callback);
+            formatLocationItem,
+            callback);
 
         request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
     };
 
-    return (search: string, types: string = "street,number,poi", sort: string = "name"): Promise<LocationItem[]> => {
+    return (search: string, types: string = "street,number,poi",
+            sort: string = "name", id?: number): Promise<LocationItem[]> => {
         return new Promise((resolve, reject) => {
             const callback = (error: any, result: LocationItem[]) => {
                 if (result) {
@@ -198,11 +89,14 @@ export = function createLocationService(
             try {
                 const { street, num } = getStreetAndNr(search);
                 const typesArray = types.split(",");
-                // look for a specific address (with number)
-                if (!!num && typesArray.includes("number")) {
+                if (id) {
+                    // look for a specific addressid
+                    getAddressByID(id, callback);
+                } else if (!!num && typesArray.includes("number")) {
+                    // look for a specific address (with number)
                     getAddress(street, num, callback);
-                    // look for a street or point of interest (without number)
                 } else if (typesArray.includes("poi") || typesArray.includes("street")) {
+                    // look for a street or point of interest (without number)
                     getLocationsBySearch(street, typesArray, callback);
                 } else {
                     resolve([]);
