@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file.
 "### Security" in case of vulnerabilities.
 -->
 
+## [3.0.0] - 2019-02-15
+
+- Glasscontainer is now added to the cascade
+- Merged all the coordinate uris into one unified uri
+
 ## [2.3.0] - 2018-10-30
 
 - Include streetid in response
