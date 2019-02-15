@@ -5,6 +5,7 @@ import lambertToLatLng from "../../helpers/lambertToLatLng";
 import { formatAddress, formatLocationItem, getStreetAndNr} from "../../helpers/format";
 import { LocationItem } from "../../types";
 import { LocationServiceConfig } from "../types";
+import sortByLayer from "../../helpers/sortByLayer";
 
 const getRequestOptions = (url: string, auth?: string) => {
     return {
@@ -28,7 +29,7 @@ const sortByNameFn = (a: LocationItem, b: LocationItem) => a.name.toLowerCase().
  */
 export = function createLocationService(
     config: LocationServiceConfig,
-): (search: string, types: string, id?: number) => Promise<LocationItem[]> {
+): (search: string, types: string, sort: string, id?: number) => Promise<LocationItem[]> {
     const getAddress = (street: string, num: string, callback: handleResponseFn<LocationItem>) => {
         // quotes need to be doubled for escaping into sql
         street = encodeURIComponent(filterSqlVar(street).replace(/'/g, "''"));
@@ -68,11 +69,16 @@ export = function createLocationService(
         request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
     };
 
-    return (search: string, types: string = "street,number,poi", id?: number): Promise<LocationItem[]> => {
+    return (search: string, types: string = "street,number,poi",
+            sort: string = "name", id?: number): Promise<LocationItem[]> => {
         return new Promise((resolve, reject) => {
             const callback = (error: any, result: LocationItem[]) => {
                 if (result) {
-                    result = result.sort(sortByNameFn);
+                    if (sort === "name") {
+                        result = result.sort(sortByNameFn);
+                    } else if (sort === "layer") {
+                        result = sortByLayer(result);
+                    }
                 }
                 if (error) {
                     reject(error);
