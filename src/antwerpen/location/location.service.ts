@@ -74,17 +74,17 @@ export = function createLocationService(
             callback);
         const buffers: any[] = [];
         request(getRequestOptions(url, config.solrGisAuthorization))
-          .on('data', (chunk) => {
-            buffers.push(chunk);
-          })
-          .on('end', () => {
-              const response = JSON.parse(Buffer.concat(buffers).toString()).response;
-              if (response.docs.length && response.docs[0].layer === 'straatnaam') {
-                getAddressBySTRAATNMID(response.docs[0].streetNameId, callback);
-            } else {
-                return request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
-            }
-          });
+            .on('data', (chunk) => {
+                buffers.push(chunk);
+            })
+            .on('end', () => {
+                const response = JSON.parse(Buffer.concat(buffers).toString()).response;
+                if (response.docs.length && response.docs[0].layer === 'straatnaam') {
+                  getAddressBySTRAATNMID(response.docs[0].streetNameId, callback);
+                } else {
+                    return request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
+                }
+            });
     };
 
     return (search: string, types: string = "street,number,poi",
