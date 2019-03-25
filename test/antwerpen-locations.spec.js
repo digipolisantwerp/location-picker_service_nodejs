@@ -132,7 +132,7 @@ describe('antwerpen', () => {
                     }
                 });
                 const fn = createService({solrGisAuthorization: solrTestAuth, solrGisUrl: solrTestUrl, crabUrl: crabTestUrl});
-                fn(undefined, undefined, 10).then((result) => {
+                fn(undefined, undefined, undefined, 10).then((result) => {
                     expect(result).not.toBeNull();
                     expect(result.length).toEqual(1);
                     expect(result[0].id).toEqual("A_DA/Locaties/MapServer/18/86232");
