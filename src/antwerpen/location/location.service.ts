@@ -15,7 +15,7 @@ const getRequestOptions = (url: string, auth?: string) => {
         headers: auth
             ? {
                   Authorization: `Basic ${auth}`,
-              } 
+              }
             : {},
     };
 };
@@ -50,8 +50,8 @@ export = function createLocationService(
     };
 
     const getAddressBySTRAATNMID = (id: number, callback: handleResponseFn<LocationItem>) => {
-        // tslint:disable-next-line:max-line-length
-        const url = `${config.crabUrl}?f=json&where=GEMEENTE='Antwerpen' and STRAATNMID='${id}' and HUISNR='1'&outFields=*`;
+        const url = `${config.crabUrl}?f=json&where=GEMEENTE='Antwerpen' and STRAATNMID='${id}'`
+        + ` and HUISNR='1'&outFields=*`;
         const responseHandler = handleResponse('features', formatAddress, callback);
         return request(getRequestOptions(url), responseHandler);
     };
@@ -79,7 +79,7 @@ export = function createLocationService(
           })
           .on('end', () => {
               const response = JSON.parse(Buffer.concat(buffers).toString()).response;
-            if (response.docs.length && response.docs[0].layer === 'straatnaam') {
+              if (response.docs.length && response.docs[0].layer === 'straatnaam') {
                 getAddressBySTRAATNMID(response.docs[0].streetNameId, callback);
             } else {
                 return request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
@@ -88,7 +88,7 @@ export = function createLocationService(
     };
 
     return (search: string, types: string = "street,number,poi",
-        sort: string = "name", id?: number): Promise<LocationItem[]> => {
+            sort: string = "name", id?: number): Promise<LocationItem[]> => {
         return new Promise((resolve, reject) => {
             const callback = (error: any, result: LocationItem[]) => {
                 if (result) {
