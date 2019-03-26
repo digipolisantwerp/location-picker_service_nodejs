@@ -1,11 +1,10 @@
 import request = require("request");
 import filterSqlVar from "../../helpers/filterSqlVar";
-import { handleResponse, handleResponseFn } from "../../helpers/handleResponse";
-import lambertToLatLng from "../../helpers/lambertToLatLng";
 import { formatAddress, formatLocationItem, getStreetAndNr } from "../../helpers/format";
+import { handleResponse, handleResponseFn } from "../../helpers/handleResponse";
+import sortByLayer from "../../helpers/sortByLayer";
 import { LocationItem } from "../../types";
 import { LocationServiceConfig } from "../types";
-import sortByLayer from "../../helpers/sortByLayer";
 
 const getRequestOptions = (url: string, auth?: string) => {
     return {
@@ -50,8 +49,7 @@ export = function createLocationService(
     };
 
     const getAddressBySTRAATNMID = (id: number, callback: handleResponseFn<LocationItem>) => {
-        const url = `${config.crabUrl}?f=json&where=GEMEENTE='Antwerpen' and STRAATNMID='${id}'`
-        + ` and HUISNR='1'&outFields=*`;
+        const url = `${config.crabUrl}?f=json&where=STRAATNMID=${id} and HUISNR='1'&outFields=*`;
         const responseHandler = handleResponse('features', formatAddress, callback);
         return request(getRequestOptions(url), responseHandler);
     };
@@ -80,7 +78,7 @@ export = function createLocationService(
             .on('end', () => {
                 const response = JSON.parse(Buffer.concat(buffers).toString()).response;
                 if (response.docs.length && response.docs[0].layer === 'straatnaam') {
-                  getAddressBySTRAATNMID(response.docs[0].streetNameId, callback);
+                    getAddressBySTRAATNMID(response.docs[0].streetNameId, callback);
                 } else {
                     return request(getRequestOptions(url, config.solrGisAuthorization), responseHandler);
                 }
