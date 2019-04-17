@@ -13,6 +13,12 @@ All notable changes to this project will be documented in this file.
 "### Security" in case of vulnerabilities.
 -->
 
+## [3.0.1] - 2019-04-17
+
+- Removed the glasscontainer again
+- Updated the range for the regional roads
+
+
 ## [3.0.0] - 2019-02-15
 
 - Glasscontainer is now added to the cascade
