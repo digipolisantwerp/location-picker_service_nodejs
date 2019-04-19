@@ -89,38 +89,6 @@ export class CoordinateService {
         });
     }
 
-    private getGlassContainers(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
-        const tolerance = 1;
-        const layerId = 7;
-        const range = 10;
-
-        return this.getPointNearby(lng, lat, range, layerId, this.config.arcGisUrl).then((response: any) => {
-            if (!response || !response.features || !response.features.length) {
-                return Promise.resolve(undefined);
-            }
-
-            const doc = response.features[0];
-            const { x, y } = doc.geometry;
-
-            const result: LocationItem = {
-                id: "" + doc.attributes.ObjectID,
-                name: doc.attributes.glascontainer_nr,
-                street: doc.attributes.straatnaam,
-                number: doc.attributes.huisnummer,
-                postal: doc.attributes.postcode,
-                locationType: LocationType.GlassContainer,
-                coordinates: {
-                    latLng: {
-                        lat: y,
-                        lng: x,
-                    },
-                },
-            };
-
-            return Promise.resolve(result);
-        });
-    }
-
     private getBicycleRoute(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const range = 20;
         const layerId = 9;
