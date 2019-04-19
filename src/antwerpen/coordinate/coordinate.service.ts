@@ -11,12 +11,11 @@ export class CoordinateService {
     }
 
     // CASCADE to find a location
-    // 1) check if the location is a park
-    // 2) check if the location is a glass container
-    // 3) check if the location is an address within 25m
-    // 4) check if the location is a bicycle route
-    // 6) check if the location is an address within 100m
-    // 7) check if the location is a regional road
+    // 1) check if the location is a park // getPointWithin
+    // 2) check if the location is an address within 25m // reverseGeocode
+    // 3) check if the location is a bicycle route // getPointNearby
+    // 4) check if the location is an address within 100m // reverseGeocode
+    // 5) check if the location is a regional road // getPointNearby
 
     public getLocation(lat: number = 0.0, lng: number = 0.0): Promise<void | LocationItem> {
         return this.getPark(lat, lng).then((park: LocationItem) => {
@@ -24,28 +23,22 @@ export class CoordinateService {
                 return Promise.resolve(park);
             }
 
-            return this.getGlassContainers(lat, lng).then((glassContainer: LocationItem) => {
-                if (glassContainer) {
-                    return glassContainer;
+            return this.getNearestAddress(lat, lng, 25).then((route25m: LocationItem) => {
+                if (route25m) {
+                    return route25m;
                 }
 
-                return this.getNearestAddress(lat, lng, 25).then((route25m: LocationItem) => {
-                    if (route25m) {
-                        return route25m;
+                return this.getBicycleRoute(lat, lng).then((bicycleRoute: LocationItem) => {
+                    if (bicycleRoute) {
+                        return bicycleRoute;
                     }
 
-                    return this.getBicycleRoute(lat, lng).then((bicycleRoute: LocationItem) => {
-                        if (bicycleRoute) {
-                            return bicycleRoute;
+                    return this.getNearestAddress(lat, lng, 100).then((route100m: LocationItem) => {
+                        if (route100m) {
+                            return route100m;
                         }
 
-                        return this.getNearestAddress(lat, lng, 100).then((route100m: LocationItem) => {
-                            if (route100m) {
-                                return route100m;
-                            }
-
-                            return this.getRegionalRoad(lat, lng);
-                        });
+                        return this.getRegionalRoad(lat, lng);
                     });
                 });
             });
@@ -90,38 +83,6 @@ export class CoordinateService {
                           );
                       })
                     : [],
-            };
-
-            return Promise.resolve(result);
-        });
-    }
-
-    private getGlassContainers(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
-        const tolerance = 1;
-        const layerId = 7;
-        const range = 10;
-
-        return this.getPointNearby(lng, lat, range, layerId, this.config.arcGisUrl).then((response: any) => {
-            if (!response || !response.features || !response.features.length) {
-                return Promise.resolve(undefined);
-            }
-
-            const doc = response.features[0];
-            const { x, y } = doc.geometry;
-
-            const result: LocationItem = {
-                id: "" + doc.attributes.ObjectID,
-                name: doc.attributes.glascontainer_nr,
-                street: doc.attributes.straatnaam,
-                number: doc.attributes.huisnummer,
-                postal: doc.attributes.postcode,
-                locationType: LocationType.GlassContainer,
-                coordinates: {
-                    latLng: {
-                        lat: y,
-                        lng: x,
-                    },
-                },
             };
 
             return Promise.resolve(result);
@@ -201,7 +162,7 @@ export class CoordinateService {
 
     private getRegionalRoad(lat: number = 0.0, lng: number = 0.0): Promise<LocationItem> {
         const layerId = 2;
-        const range = 8;
+        const range = 100;
         return this.getPointNearby(lng, lat, range, layerId, this.config.arcGisUrl).then((response: any) => {
             if (!response) {
                 return Promise.resolve(undefined);
