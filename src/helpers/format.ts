@@ -4,7 +4,7 @@ import { LocationItem, LocationType, Coordinates, LatLngCoordinate } from "../ty
 const formatAddress = (doc: any): LocationItem => {
     const { x, y } = doc.geometry;
     const latLng = lambertToLatLng(x, y);
-    const{ STRAATNAAM, STRAATNM, HUISNR, POSTCODE, DISTRICT } = doc.attributes;
+    const { STRAATNAAM, STRAATNM, HUISNR, POSTCODE, DISTRICT } = doc.attributes;
     const nameFormat = `${STRAATNAAM} ${HUISNR}, ${POSTCODE} ${DISTRICT}`;
 
     return {
@@ -19,7 +19,8 @@ const formatAddress = (doc: any): LocationItem => {
         coordinates: {
             latLng,
             lambert: { x, y }
-        }
+        },
+        streetid: doc.attributes.STRAATNMID
     };
 };
 

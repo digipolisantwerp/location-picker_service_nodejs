@@ -71,6 +71,39 @@ describe('antwerpen', () => {
                 });
             });
 
+            it('should query CRAB when searching for street without number', () => {
+              const query = 'generaal armstrongweg';
+              const createService = proxyquire('../dist/antwerpen/location/location.service', {
+                'request': (options, handler) => {
+                  return handler(null, {
+                    statusCode: 200
+                  }, dummyCrabResult);
+                }
+              });
+              const fn = createService({ solrGisAuthorization: solrTestAuth, solrGisUrl: solrTestUrl, crabUrl: crabTestUrl });
+              fn(query).then((result) => {
+                expect(result).not.toBeNull();
+                expect(result.length).toEqual(1);
+                expect(result[0].id).toEqual("2001887628");
+              });
+            });
+            it('when searching for street without number, should return postal code', () => {
+              const query = 'generaal armstrongweg';
+              const createService = proxyquire('../dist/antwerpen/location/location.service', {
+                'request': (options, handler) => {
+                  return handler(null, {
+                    statusCode: 200
+                  }, dummyCrabResult);
+                }
+              });
+              const fn = createService({ solrGisAuthorization: solrTestAuth, solrGisUrl: solrTestUrl, crabUrl: crabTestUrl });
+              fn(query).then((result) => {
+                expect(result).not.toBeNull();
+                expect(result.length).toEqual(1);
+                expect(result[0].id).toEqual("2001887628");
+                expect(result[0].postal).toEqual("2020");
+              });
+            });
             it('should query SOLR for a streetname or poi', () => {
                 const query = 'generaal armstrongweg';
                 const createService = proxyquire('../dist/antwerpen/location/location.service', {
@@ -99,7 +132,7 @@ describe('antwerpen', () => {
                     }
                 });
                 const fn = createService({solrGisAuthorization: solrTestAuth, solrGisUrl: solrTestUrl, crabUrl: crabTestUrl});
-                fn(undefined, undefined, 10).then((result) => {
+                fn(undefined, undefined, undefined, 10).then((result) => {
                     expect(result).not.toBeNull();
                     expect(result.length).toEqual(1);
                     expect(result[0].id).toEqual("A_DA/Locaties/MapServer/18/86232");
