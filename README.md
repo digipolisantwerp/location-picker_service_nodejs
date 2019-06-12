@@ -63,12 +63,12 @@ SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
 # only for coordinates service:
 ARC_GIS_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer
+
 #vlaanderen
 VLAANDEREN_GIS_URL=http://loc.api.geopunt.be/geolocation/Location
 VLAANDEREN_LOCATION_URL=http://loc.api.geopunt.be/v4
 VLAANDEREN_LOCATION_URL_POI=http://loc.api.geopunt.be/v3
 VLAANDEREN_LOCATION_URL_ID=https://address-o.antwerpen.be
-MapServer
 ```
 Run the service:
 

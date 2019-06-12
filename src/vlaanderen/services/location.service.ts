@@ -40,7 +40,11 @@ function formatResponseID(data: any) {
 }
 function formatResponse(data: any) {
   const items: number[] = [];
-  return data.map((item: any) => {
+  return data.filter((item: any) => {
+    const filter = !(items.includes(item.id));
+    items.push(item.id);
+    return filter;
+  }).map((item: any) => {
     const locationType: string = item.LocationType;
     const location = {
       X_Lambert72: item.Location.X_Lambert72,
@@ -64,10 +68,6 @@ function formatResponse(data: any) {
       },
       street: item.Thoroughfarename,
     });
-  }).filter((item: any) => {
-    const filter = !(items.includes(item.id));
-    items.push(item.id);
-    return filter;
   });
 }
 
@@ -75,7 +75,7 @@ const getById = async (id: string, config: Config) => {
   const { data } = await axios.get(`${config.locationIdUrl}/addressdetails/${id}`);
 
   return data;
-}
+};
 
 async function getStreets(query: string, config: Config) {
   const { data } = await axios.get(`${config.locationUrl}/Location`, {
