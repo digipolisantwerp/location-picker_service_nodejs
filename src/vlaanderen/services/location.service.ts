@@ -41,7 +41,7 @@ function formatResponseID(data: any) {
 function formatResponse(data: any) {
   const items: number[] = [];
   return data.filter((item: any) => {
-    const filter = !(items.includes(item.id));
+    const filter = !(items.includes(item.ID));
     items.push(item.id);
     return filter;
   }).map((item: any) => {
