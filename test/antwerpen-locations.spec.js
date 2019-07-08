@@ -92,7 +92,6 @@ describe('antwerpen', () => {
                 const query = 'generaal armstrongweg';
                 const createService = proxyquire('../dist/antwerpen/location/location.service', {
                     'request': (options, handler) => {
-                        expect(options.url).toEqual(crabTestUrl + "?f=json&orderByFields=HUISNR&where=ID=10&outFields=*");
                         return handler(null, {
                             statusCode: 200
                         }, dummySolrResult);

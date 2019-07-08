@@ -63,6 +63,12 @@ SOLR_AUTHORIZATION=
 CRAB_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Stad/CRAB_adresposities/MapServer/0/query
 # only for coordinates service:
 ARC_GIS_URL=https://geoint.antwerpen.be/arcgissql/rest/services/P_Meldingen/meldingen/MapServer
+
+#vlaanderen
+VLAANDEREN_GIS_URL=http://loc.api.geopunt.be/geolocation/Location
+VLAANDEREN_LOCATION_URL=http://loc.api.geopunt.be/v4
+VLAANDEREN_LOCATION_URL_POI=http://loc.api.geopunt.be/v3
+VLAANDEREN_LOCATION_URL_ID=https://address-o.antwerpen.be
 ```
 Run the service:
 
@@ -72,8 +78,10 @@ Run the service:
 ```
 
 Test locations service by browsing to [localhost:9999/api/locations?search=general armstrongweg 1](http://localhost:9999/api/locations?search=generaal%20armstrongweg%201).
+Test locations (vlaanderen) service by browsing to [localhost:9999/api/locations?search=general armstrongweg 1](http://localhost:9999/api/vlaanderen/locations?search=generaal%20armstrongweg%201).
 
 Test coordinates service by browsing to [localhost:9999/api/coordinates?lat=51.196541&lng=4.421896](http://localhost:9999/api/coordinates?lat=51.196541&lng=4.421896).
+Test coordinates service (vlaanderen) by browsing to [localhost:9999/api/coordinates?lat=51.196541&lng=4.421896](http://localhost:9999/api/vlaanderen/coordinates?lat=51.196541&lng=4.421896).
 
 The UI demo app expects the service to run on port 9999.
 
