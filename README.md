@@ -1,5 +1,11 @@
 # Location Picker Smart Widget BFF (Node)
 
+## Deprecated
+
+This BFF package is only used for legacy versions of the location picker widget. For new applications you should use the [newest version of location picker](https://github.com/digipolisantwerp/location-picker_widget_angular) which no longer uses this BFF package.
+
+## Introduction
+
 This is a Node.js backend service library to create a BFF service for the Location Picker Smart Widget. The Location Picker widget provides a picker field to choose a street, street address, addressID or point of interest from GIS sources. This service is matched by a [corresponding UI](https://github.com/digipolisantwerp/location-picker_widget_angular).
 
 There is a **demo service**, see below for instructions on running it.
