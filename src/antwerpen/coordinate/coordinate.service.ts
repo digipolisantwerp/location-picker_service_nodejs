@@ -231,15 +231,16 @@ export class CoordinateService {
 
     private reverseGeocode(lat: number = 0.0, lng: number = 0.0, range: number = 20) {
         const url =
-            "https://reversedgeocode-a.antwerpen.be/api/ReservedGeocoding/GetAntwerpAdresByPoint" +
-            "?sr=4326" +
+            "https://reversedgeocoding-app1-a.antwerpen.be/antwerpaddressbypoint?" +
+            "?SR=4326" +
             "&count=20" +
             "&buffer=" +
             range +
             "&x=" +
             lng +
             "&y=" +
-            lat;
+            lat +
+            "relevant=false";
 
         return requestPromise(this.getRequestOptions(url));
     }
